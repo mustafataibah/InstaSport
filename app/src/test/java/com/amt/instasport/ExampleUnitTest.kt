@@ -1,4 +1,4 @@
-package com.example.instasport
+package com.amt.instasport
 
 import org.junit.Test
 

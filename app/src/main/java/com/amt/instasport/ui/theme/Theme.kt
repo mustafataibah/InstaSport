@@ -1,4 +1,4 @@
-package com.example.instasport.ui.theme
+package com.amt.instasport.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

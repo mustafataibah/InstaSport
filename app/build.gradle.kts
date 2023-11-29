@@ -1,14 +1,17 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
+    // Google Services
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.instasport"
+    namespace = "com.amt.instasport"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.instasport"
+        applicationId = "com.amt.instasport"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -65,6 +68,12 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+
+    // Firebase products (don't specify versions)
+    implementation("com.google.firebase:firebase-analytics")
 
     // appcompat
     implementation("androidx.appcompat:appcompat: 1.6.1")

@@ -1,4 +1,4 @@
-package com.example.instasport
+package com.amt.instasport
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
