@@ -1,8 +1,5 @@
 package com.amt.instasport
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -11,19 +8,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController? = null) {
     val backIcon = ImageVector.vectorResource(id = R.drawable.outline_chevron_left_24)
 
     Column(
@@ -35,7 +31,7 @@ fun RegisterScreen(navController: NavController) {
     ) {
         IconButton(
             onClick = {
-                navController.navigateUp()
+                navController?.navigateUp()
             },
             modifier = Modifier.align(Alignment.Start)
         ) {
@@ -89,3 +85,8 @@ fun RegisterScreen(navController: NavController) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewRegisterScreen() {
+    RegisterScreen()
+}

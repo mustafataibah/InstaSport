@@ -14,11 +14,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun LoginRegisterScreen(navController: NavController) {
+fun LoginRegisterScreen(navController: NavController? = null) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -26,9 +27,9 @@ fun LoginRegisterScreen(navController: NavController) {
         val logoPainter = painterResource(id = R.drawable.logo)
         Box(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+            Modifier
+                .weight(1f)
+                .fillMaxWidth(),
         ) {
             Image(
                 painter = logoPainter,
@@ -40,13 +41,13 @@ fun LoginRegisterScreen(navController: NavController) {
         // Buttons and clickable text
         Column(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(16.dp),
+            Modifier
+                .weight(1f)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Button(onClick = { navController.navigate("register") }) {
+            Button(onClick = { navController?.navigate("register") }) {
                 Text("Sign Up with Email")
             }
 
@@ -74,9 +75,16 @@ fun LoginRegisterScreen(navController: NavController) {
                 text = annotatedText,
                 onClick = { offset ->
                     annotatedText.getStringAnnotations(tag = "LOG_IN", start = offset, end = offset)
-                        .firstOrNull()?.let { navController.navigate("login") }
+                        .firstOrNull()?.let { navController?.navigate("login") }
                 },
             )
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoginRegisterScreen() {
+    LoginRegisterScreen()
+}
+
