@@ -74,7 +74,6 @@ dependencies {
 
     // Firebase products (don't specify versions)
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
 
     // appcompat
     implementation("androidx.appcompat:appcompat: 1.6.1")
@@ -90,9 +89,4 @@ dependencies {
     // Compose UI Tooling
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
-
-    // State and Jetpack Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
-
 }
