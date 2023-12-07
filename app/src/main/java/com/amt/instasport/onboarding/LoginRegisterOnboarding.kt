@@ -1,9 +1,18 @@
-package com.amt.instasport
+package com.amt.instasport.onboarding
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,16 +26,35 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.compose.foundation.background
+import com.amt.instasport.R
 
+//@Composable
+//fun LoginRegisterScreen(navController: NavController? = null) {
+//    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+//
+//    Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+//        CenterAlignedTopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//            titleContentColor = MaterialTheme.colorScheme.primary,
+//        ), title = { Text("Sign Up") }, navigationIcon = {
+//            IconButton(onClick = { navController?.navigateUp() }) {
+//                Icon(
+//                    imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
+//                )
+//            }
+//        }, scrollBehavior = scrollBehavior
+//        )
+//    }) { innerPadding ->
+//        LoginRegisterScreenContent(navController, innerPadding)
+//    }
+//}
 
 @Composable
 fun LoginRegisterScreen(navController: NavController? = null) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-        ,
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val logoPainter = painterResource(id = R.drawable.instasport_logo)
@@ -35,9 +63,7 @@ fun LoginRegisterScreen(navController: NavController? = null) {
         Spacer(modifier = Modifier.weight(2f))
 
         Image(
-            painter = logoPainter,
-            contentDescription = "Logo",
-            modifier = Modifier.weight(1f)
+            painter = logoPainter, contentDescription = "Logo", modifier = Modifier.weight(1f)
         )
 
         Image(
@@ -58,21 +84,12 @@ fun LoginRegisterScreen(navController: NavController? = null) {
                 onClick = {
                     navController?.navigate("register")
                 },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .width(220.dp)
                     .height(50.dp)
             ) {
                 Text("Sign Up with Phone")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(onClick = {},
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(50.dp)
-            ) {
-                Text("Sign Up with Google")
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -82,19 +99,20 @@ fun LoginRegisterScreen(navController: NavController? = null) {
                     append("Already a user? ")
                 }
                 pushStringAnnotation(tag = "LOG_IN", annotation = "login")
-                withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, color = Color.Gray)) {
-                    append("Log In")
+                withStyle(
+                    style = SpanStyle(
+                        textDecoration = TextDecoration.Underline, color = Color.Gray
+                    )
+                ) {
+                    append("Sign In")
                 }
                 pop()
             }
 
-            ClickableText(
-                text = annotatedText,
-                onClick = { offset ->
-                    annotatedText.getStringAnnotations(tag = "LOG_IN", start = offset, end = offset)
-                        .firstOrNull()?.let { navController?.navigate("login") }
-                }
-            )
+            ClickableText(text = annotatedText, onClick = { offset ->
+                annotatedText.getStringAnnotations(tag = "LOG_IN", start = offset, end = offset)
+                    .firstOrNull()?.let { navController?.navigate("login") }
+            })
         }
 
         Spacer(modifier = Modifier.weight(2f))

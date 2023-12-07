@@ -1,4 +1,4 @@
-package com.amt.instasport
+package com.amt.instasport.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

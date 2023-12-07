@@ -1,4 +1,4 @@
-package com.amt.instasport
+package com.amt.instasport.onboarding
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -17,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.compose.runtime.livedata.observeAsState
+import com.amt.instasport.AuthViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,31 +34,24 @@ import androidx.compose.runtime.livedata.observeAsState
 fun RegisterScreen(navController: NavController? = null) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = { Text("Sign Up") },
-                navigationIcon = {
-                    IconButton(onClick = { navController?.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+        CenterAlignedTopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ), title = { Text("Sign Up") }, navigationIcon = {
+            IconButton(onClick = { navController?.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
+                )
+            }
+        }, scrollBehavior = scrollBehavior
+        )
+    }) { innerPadding ->
         RegisterForm(Modifier.padding(innerPadding), navController)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterForm(modifier: Modifier = Modifier, navController: NavController? = null) {
     val viewModel: AuthViewModel = viewModel()
@@ -69,7 +62,7 @@ fun RegisterForm(modifier: Modifier = Modifier, navController: NavController? = 
 
     LaunchedEffect(authState) {
         if (authState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-            navController?.navigate("dashboard") {
+            navController?.navigate("userDetails") {
                 // This makes sure the back button does not take us back to the registration screen
                 popUpTo("loginRegister") { inclusive = true }
             }
@@ -115,7 +108,10 @@ fun RegisterForm(modifier: Modifier = Modifier, navController: NavController? = 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(onClick = {
-                viewModel.verifyPhoneNumberWithCode(viewModel.storedVerificationId, verificationCode)
+                viewModel.verifyPhoneNumberWithCode(
+                    viewModel.storedVerificationId,
+                    verificationCode
+                )
             }) {
                 Text("Verify Code")
             }
