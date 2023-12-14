@@ -1,33 +1,40 @@
 package com.amt.instasport
 
+import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.amt.instasport.onboarding.CommunityOnboardingScreen
-import com.amt.instasport.onboarding.EventsOnboardingScreen
-import com.amt.instasport.onboarding.LoginRegisterScreen
+import com.amt.instasport.onboarding.LandingScreen
 import com.amt.instasport.onboarding.LoginScreen
-import com.amt.instasport.onboarding.RegisterScreen
-import com.amt.instasport.onboarding.SportsInterestOnboardingScreen
-import com.amt.instasport.onboarding.UserDetailsOnboardingScreen
-import com.amt.instasport.onboarding.UsernameOnboardingScreen
-import com.amt.instasport.onboarding.WelcomeOnboardingScreen
+import com.amt.instasport.onboarding.OnboardingScreen
+import com.amt.instasport.onboarding.SignUpScreen
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "welcomeOnboarding") {
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+    val isOnboardingFinished by remember {
+        mutableStateOf(sharedPreferences.getBoolean("isFinished", false))
+    }
+    val startDestination = if (isOnboardingFinished) "landing" else "onboarding"
+
+
+    NavHost(navController = navController, startDestination = startDestination) {
         // Onboarding Screens
-        composable("welcomeOnboarding") { WelcomeOnboardingScreen(navController) }
-        composable("communityOnboarding") { CommunityOnboardingScreen(navController) }
-        composable("eventsOnboarding") { EventsOnboardingScreen(navController) }
-        composable("usernameOnboarding") { UsernameOnboardingScreen(navController) }
-        composable("userDetailsOnboarding") { UserDetailsOnboardingScreen(navController) }
-        composable("sportsInterestsOnboarding") {  SportsInterestOnboardingScreen(navController) }
-        composable("loginRegister") { LoginRegisterScreen(navController) }
+        composable("onboarding") { OnboardingScreen(navController, context as MainActivity) }
+//        composable("usernameOnboarding") { UsernameOnboardingScreen(navController) }
+//        composable("userDetailsOnboarding") { UserDetailsOnboardingScreen(navController) }
+//        composable("genderOnboarding") { GenderOnboardingScreen(navController) }
+//        composable("sportsInterestsOnboarding") { SportsInterestOnboardingScreen(navController) }
+        composable("landing") { LandingScreen(navController) }
         composable("login") { LoginScreen(navController) }
-        composable("register") { RegisterScreen(navController) }
+        composable("signUp") { SignUpScreen(navController)}
 
         // Dashboard
         composable("dashboard") { DashboardScreen(navController) }

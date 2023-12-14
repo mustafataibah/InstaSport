@@ -4,16 +4,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-//private val darkColorScheme = darkColorScheme(
-//    primary = SpacePurple,
-//    secondary = Lavender,
-//    tertiary = Seashell
-//)
-
 private val lightColorScheme = lightColorScheme(
     primary = Lavender,
     onPrimary = White,
     background = White,
+    secondary = SecondPurple,
 )
 
 @Composable
