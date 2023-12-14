@@ -149,7 +149,7 @@ fun LoginScreen(navController: NavController? = null) {
             }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = { /* TODO: Handle login */ },
+                onClick = { /* TODO: Handle login */ navController?.navigate("dashboard") },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -181,16 +181,17 @@ fun LoginScreen(navController: NavController? = null) {
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.ic_google),
                     onClick = {
-                        val client = viewModel.getGoogleSignInClient(context)
-                        val signInIntent = client.signInIntent
-                        googleSignInLauncher.launch(signInIntent)
+                        navController?.navigate("dashboard")
+//                        val client = viewModel.getGoogleSignInClient(context)
+//                        val signInIntent = client.signInIntent
+//                        googleSignInLauncher.launch(signInIntent)
                     },
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    onClick = { /* TODO: Handle Phone Login */ },
+                    onClick = { /* TODO: Handle Phone Login */ navController?.navigate("dashboard") },
                     modifier = Modifier.weight(1f)
                 )
             }

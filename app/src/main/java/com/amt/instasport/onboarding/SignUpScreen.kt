@@ -83,6 +83,7 @@ fun SignUpScreen(navController: NavController? = null) {
             AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                 // Handle already authenticated user, maybe navigate to main screen
             }
+
             else -> {
 
             }
@@ -174,15 +175,16 @@ fun SignUpScreen(navController: NavController? = null) {
             ) {
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.ic_google), onClick = {
-                        val client = viewModel.getGoogleSignInClient(context)
-                        val signInIntent = client.signInIntent
-                        googleSignInLauncher.launch(signInIntent)
+                        navController?.navigate("userInfo")
+//                        val client = viewModel.getGoogleSignInClient(context)
+//                        val signInIntent = client.signInIntent
+//                        googleSignInLauncher.launch(signInIntent)
                     }, modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    onClick = { /* TODO: Handle Phone Sign Up */ },
+                    onClick = { /* TODO: Handle Phone Sign Up */ navController?.navigate("userInfo") },
                     modifier = Modifier.weight(1f)
                 )
             }
