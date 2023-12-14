@@ -2,6 +2,7 @@ package com.amt.instasport
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -95,6 +96,7 @@ fun RegisterForm(modifier: Modifier = Modifier, navController: NavController? = 
             label = { Text("Phone Number") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))

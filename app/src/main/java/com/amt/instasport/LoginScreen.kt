@@ -2,6 +2,7 @@ package com.amt.instasport
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -60,6 +61,7 @@ fun LoginForm(modifier: Modifier = Modifier, navController: NavController? = nul
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(16.dp)
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -70,7 +72,8 @@ fun LoginForm(modifier: Modifier = Modifier, navController: NavController? = nul
             maxLines = 1,
             label = { Text("Phone") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -82,7 +85,8 @@ fun LoginForm(modifier: Modifier = Modifier, navController: NavController? = nul
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
