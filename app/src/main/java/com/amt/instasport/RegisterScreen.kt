@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +44,10 @@ fun RegisterScreen(navController: NavController? = null) {
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-                title = { Text("Sign Up") },
+                title = { Text(
+                    text = "Sign Up",
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { navController?.navigateUp() }) {
                         Icon(

@@ -12,10 +12,16 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+
     Scaffold(
+        topBar = {
+            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+                currentDestination?.route?.let { TopBar(title = it, navController) }
+            }
+        },
         bottomBar = {
-            val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-            if (currentDestination?.route in listOf("dashboard", "events", "profile")) {
+            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
                 BottomNavBar(navController)
             }
         }
@@ -25,6 +31,7 @@ fun AppNavigation() {
             composable("register") { RegisterScreen(navController) }
             composable("login") { LoginScreen(navController) }
             composable("dashboard") { DashboardScreen(navController) }
+            composable("host") { HostScreen(navController) }
             composable("events") { EventsScreen(navController) }
             composable("profile") { ProfileScreen(navController) }
         }

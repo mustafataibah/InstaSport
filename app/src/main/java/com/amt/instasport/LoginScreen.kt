@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +32,10 @@ fun LoginScreen(navController: NavController? = null) {
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-                title = { Text("Log In") },
+                title = { Text(
+                    text = "Log In",
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { navController?.navigateUp() }) {
                         Icon(
