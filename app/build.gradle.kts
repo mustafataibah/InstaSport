@@ -72,6 +72,9 @@ dependencies {
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
 
+    // Google API
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
     // Firebase products (don't specify versions)
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")

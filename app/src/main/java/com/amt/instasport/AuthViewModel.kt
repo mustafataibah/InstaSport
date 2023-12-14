@@ -1,12 +1,18 @@
 package com.amt.instasport
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amt.instasport.models.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
@@ -15,6 +21,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class AuthViewModel : ViewModel() {
+    private val userRepository = UserRepository()
+    val userData = MutableLiveData<User?>()
+    val userLoadError = MutableLiveData<String>()
     // [START declare_auth]
     // [START initialize_auth]
     private val auth = Firebase.auth
@@ -118,8 +127,58 @@ class AuthViewModel : ViewModel() {
     }
 
     enum class AuthenticationState {
-        AUTHENTICATED, FAILED
+        AUTHENTICATED, FAILED, USER_NOT_FOUND, NEW_USER
     }
 
     // REMINDER : Resend verification logic
+
+    fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("839331351515-otct4f6br104ae23ihjm22tlr5hauv8p.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        return GoogleSignIn.getClient(context, gso)
+    }
+
+    fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = task.result?.user
+                user?.let {
+                    userRepository.doesUserExist(it.uid) { exists ->
+                        if (exists) {
+                            // User exists in the database
+                            authenticationState.value = AuthenticationState.AUTHENTICATED
+                        } else {
+                            // User does not exist in the database, navigate to userDetails
+                            authenticationState.value = AuthenticationState.USER_NOT_FOUND
+                        }
+                    }
+                }
+            } else {
+                // Handle sign-in failure
+            }
+        }
+    }
+
+    private fun checkUserInDatabase(userEmail: String?) {
+        // Implement database check logic here
+        // Set authenticationState accordingly
+    }
+
+    fun addUser(user: User) {
+        userRepository.writeUser(user)
+    }
+
+    fun getUser(userId: String) {
+        userRepository.readUser(userId, onSuccess = { user ->
+            // Handle user data
+            userData.value = user // Assign the retrieved user to the LiveData
+        }, onFailure = { exception ->
+            // Handle failure
+            userLoadError.value = exception?.message ?: "Unknown error occurred"
+        })
+    }
 }

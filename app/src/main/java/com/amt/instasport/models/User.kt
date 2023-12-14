@@ -1,6 +1,6 @@
-//package com.amt.instasport.models
-//
-//import android.provider.ContactsContract.CommonDataKinds.Phone
-//
-//data class User(val username: String?, val phoneNumber: Phone){
-//}
+package com.amt.instasport.models
+
+data class User(
+    val userId: String,
+    val userEmail: String
+)

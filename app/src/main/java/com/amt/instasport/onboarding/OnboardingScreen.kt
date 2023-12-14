@@ -48,33 +48,25 @@ import com.google.accompanist.pager.rememberPagerState
 fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     // Using these animations I got online for now, will change them later
     val animations = listOf(
-        R.raw.intro1,
-        R.raw.intro2,
-        R.raw.intro3
+        R.raw.intro1, R.raw.intro2, R.raw.intro3
     )
     val titles = listOf(
-        "Welcome",
-        "Host",
-        "Join"
+        "Welcome", "Host", "Join"
     )
 
     val descriptions = listOf(
-        "Description 1",
-        "Description 2",
-        "Description 3"
+        "Description 1", "Description 2", "Description 3"
     )
     val pagerState = rememberPagerState(
         pageCount = animations.size
     )
 
     Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         HorizontalPager(
-            state = pagerState,
-            Modifier.wrapContentSize()
+            state = pagerState, Modifier.wrapContentSize()
         ) { currentPage ->
             Column(
                 Modifier
@@ -113,29 +105,34 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     }
 
     ButtonsSection(
-        pagerState = pagerState,
-        navController = navController,
-        context = context
+        pagerState = pagerState, navController = navController, context = context
     )
 
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ButtonsSection(pagerState: PagerState, navController: NavHostController, context: MainActivity) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(30.dp)){
-        if (pagerState.currentPage == 2){
-            OutlinedButton(onClick = {
-                onBoardingIsFinished(context = context)
-                navController.popBackStack()
-                navController.navigate("landing")
-            },
+fun ButtonsSection(
+    pagerState: PagerState,
+    navController: NavHostController,
+    context: MainActivity
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp)
+    ) {
+        if (pagerState.currentPage == 2) {
+            OutlinedButton(
+                onClick = {
+                    onBoardingIsFinished(context = context)
+                    navController.popBackStack()
+                    navController.navigate("landing")
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                , colors = ButtonDefaults.buttonColors(
+                    .align(Alignment.BottomCenter),
+                colors = ButtonDefaults.buttonColors(
                     containerColor = Lavender
                 ),
             ) {
@@ -154,11 +151,10 @@ fun ButtonsSection(pagerState: PagerState, navController: NavHostController, con
 fun PageIndicator(pageCount: Int, currentPage: Int, modifier: Modifier) {
 
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
+        horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier
     ) {
-        repeat(pageCount){
-            IndicatorSingleDot(isSelected = it == currentPage )
+        repeat(pageCount) {
+            IndicatorSingleDot(isSelected = it == currentPage)
         }
 
 
@@ -169,12 +165,13 @@ fun PageIndicator(pageCount: Int, currentPage: Int, modifier: Modifier) {
 fun IndicatorSingleDot(isSelected: Boolean) {
 
     val width = animateDpAsState(targetValue = if (isSelected) 35.dp else 15.dp, label = "")
-    Box(modifier = Modifier
-        .padding(2.dp)
-        .height(15.dp)
-        .width(width.value)
-        .clip(CircleShape)
-        .background(if (isSelected) Lavender else SecondPurple)
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .height(15.dp)
+            .width(width.value)
+            .clip(CircleShape)
+            .background(if (isSelected) Lavender else SecondPurple)
     )
 }
 

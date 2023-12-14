@@ -13,6 +13,7 @@ import com.amt.instasport.onboarding.LandingScreen
 import com.amt.instasport.onboarding.LoginScreen
 import com.amt.instasport.onboarding.OnboardingScreen
 import com.amt.instasport.onboarding.SignUpScreen
+import com.amt.instasport.onboarding.UserInfoScreen
 
 @Composable
 fun AppNavigation() {
@@ -28,13 +29,10 @@ fun AppNavigation() {
     NavHost(navController = navController, startDestination = startDestination) {
         // Onboarding Screens
         composable("onboarding") { OnboardingScreen(navController, context as MainActivity) }
-//        composable("usernameOnboarding") { UsernameOnboardingScreen(navController) }
-//        composable("userDetailsOnboarding") { UserDetailsOnboardingScreen(navController) }
-//        composable("genderOnboarding") { GenderOnboardingScreen(navController) }
-//        composable("sportsInterestsOnboarding") { SportsInterestOnboardingScreen(navController) }
         composable("landing") { LandingScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("signUp") { SignUpScreen(navController)}
+        composable("userInfo") { UserInfoScreen(navController)}
 
         // Dashboard
         composable("dashboard") { DashboardScreen(navController) }
