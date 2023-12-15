@@ -72,9 +72,13 @@ dependencies {
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
 
+    // Google API
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
     // Firebase products (don't specify versions)
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
 
     // appcompat
     implementation("androidx.appcompat:appcompat: 1.6.1")
@@ -94,5 +98,11 @@ dependencies {
     // State and Jetpack Compose
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+    // Pager
+    implementation("com.google.accompanist:accompanist-pager:0.12.0")
+
+    // Lottie
+    implementation("com.airbnb.android:lottie-compose:6.2.0")
 
 }

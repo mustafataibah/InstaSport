@@ -1,24 +1,19 @@
 package com.amt.instasport.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val darkColorScheme = darkColorScheme(
-    primary = SpacePurple,
-    secondary = Lavender,
-    tertiary = Seashell
-
+private val lightColorScheme = lightColorScheme(
+    primary = Lavender,
+    onPrimary = White,
+    background = White,
+    secondary = SecondPurple,
 )
 
 @Composable
-fun InstaSportTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = darkColorScheme
+fun InstaSportTheme(content: @Composable () -> Unit) {
+    val colorScheme = lightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
