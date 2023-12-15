@@ -48,7 +48,7 @@ import com.google.accompanist.pager.rememberPagerState
 fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     // Using these animations I got online for now, will change them later
     val animations = listOf(
-        R.raw.intro1, R.raw.intro2, R.raw.intro3
+        R.raw.animation, R.raw.animation, R.raw.animation
     )
     val titles = listOf(
         "Welcome", "Host", "Join"
