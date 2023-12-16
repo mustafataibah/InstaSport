@@ -59,8 +59,9 @@ fun SignUpScreen(navController: NavController? = null) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-//    val isEmailValid = remember(email) { email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) }
-//    val isPasswordValid = remember(password) { password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } }
+    val isEmailValid = remember(email) { email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) }
+    val isPasswordValid =
+        remember(password) { password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } }
     val focusManager = LocalFocusManager.current
     val viewModel: AuthViewModel = viewModel()
     val authState by viewModel.authenticationState.observeAsState()
@@ -80,12 +81,12 @@ fun SignUpScreen(navController: NavController? = null) {
     LaunchedEffect(authState) {
         when (authState) {
             AuthViewModel.AuthenticationState.NEW_USER -> navController?.navigate("userInfo")
+            AuthViewModel.AuthenticationState.USER_ALREADY_EXISTS -> navController?.navigate("login")
             AuthViewModel.AuthenticationState.AUTHENTICATED -> {
-                // Handle already authenticated user, maybe navigate to main screen
+                navController?.navigate("dashboard")
             }
-
             else -> {
-
+                // Handle exceptions
             }
         }
     }
@@ -137,18 +138,17 @@ fun SignUpScreen(navController: NavController? = null) {
             Button(
                 onClick = {
                     navController?.navigate("userInfo")
-//                    if (isEmailValid && isPasswordValid) {
-//                        navController?.navigate("userInfo")
-//                    } else {
-//                       // TODO: Show error message
-//                    }
+                    if (isEmailValid && isPasswordValid) {
+                        viewModel.signUpWithEmailPassword(email, password)
+                    } else {
+                        // TODO: Show error message
+                    }
                 },
-
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-//                enabled = isEmailValid && isPasswordValid
+                enabled = isEmailValid && isPasswordValid
             ) {
                 Text(
                     "Sign Up", fontSize = 16.sp
@@ -175,16 +175,15 @@ fun SignUpScreen(navController: NavController? = null) {
             ) {
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.ic_google), onClick = {
-                        navController?.navigate("userInfo")
-//                        val client = viewModel.getGoogleSignInClient(context)
-//                        val signInIntent = client.signInIntent
-//                        googleSignInLauncher.launch(signInIntent)
+                        val client = viewModel.getGoogleSignInClient(context)
+                        val signInIntent = client.signInIntent
+                        googleSignInLauncher.launch(signInIntent)
                     }, modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    onClick = { /* TODO: Handle Phone Sign Up */ navController?.navigate("userInfo") },
+                    onClick = { /* TODO: Handle Phone Sign Up */ navController?.navigate("phoneSignUp") },
                     modifier = Modifier.weight(1f)
                 )
             }

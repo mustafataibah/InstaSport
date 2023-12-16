@@ -3,8 +3,8 @@ package com.amt.instasport
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.amt.instasport.onboarding.LandingScreen
 import com.amt.instasport.onboarding.LoginScreen
 import com.amt.instasport.onboarding.OnboardingScreen
+import com.amt.instasport.onboarding.PhoneSignUpScreen
 import com.amt.instasport.onboarding.SignUpScreen
 import com.amt.instasport.onboarding.UserInfoScreen
 
@@ -44,6 +45,7 @@ fun AppNavigation() {
             composable("landing") { LandingScreen(navController) }
             composable("login") { LoginScreen(navController) }
             composable("signUp") { SignUpScreen(navController) }
+            composable("phoneSignUp") { PhoneSignUpScreen(navController) }
             composable("userInfo") { UserInfoScreen(navController) }
 
             // Dashboard

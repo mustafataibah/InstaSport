@@ -68,7 +68,7 @@ fun LoginScreen(navController: NavController? = null) {
 
     LaunchedEffect(authState) {
         when (authState) {
-            AuthViewModel.AuthenticationState.USER_NOT_FOUND -> navController?.navigate("userDetailsOnboarding")
+            AuthViewModel.AuthenticationState.USER_NOT_FOUND -> navController?.navigate("userInfo")
             AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                 navController?.navigate("dashboard")
             }
@@ -149,7 +149,7 @@ fun LoginScreen(navController: NavController? = null) {
             }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = { /* TODO: Handle login */ navController?.navigate("dashboard") },
+                onClick = { viewModel.signInWithEmailPassword(email, password) },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -181,17 +181,16 @@ fun LoginScreen(navController: NavController? = null) {
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.ic_google),
                     onClick = {
-                        navController?.navigate("dashboard")
-//                        val client = viewModel.getGoogleSignInClient(context)
-//                        val signInIntent = client.signInIntent
-//                        googleSignInLauncher.launch(signInIntent)
+                        val client = viewModel.getGoogleSignInClient(context)
+                        val signInIntent = client.signInIntent
+                        googleSignInLauncher.launch(signInIntent)
                     },
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    onClick = { /* TODO: Handle Phone Login */ navController?.navigate("dashboard") },
+                    onClick = { navController?.navigate("phoneSignUp") },
                     modifier = Modifier.weight(1f)
                 )
             }

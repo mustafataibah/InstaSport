@@ -2,6 +2,7 @@ package com.amt.instasport
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,13 +18,41 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class AuthViewModel : ViewModel() {
+    var tempUserName = mutableStateOf("")
+    var tempUserAge = mutableStateOf("")
+    var tempUserGender = mutableStateOf("")
+
+    fun uploadUserDataToDatabase() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userData = User(
+                uid = user.uid,
+                name = tempUserName.value,
+                age = tempUserAge.value.toIntOrNull() ?: 0,
+                gender = tempUserGender.value
+            )
+            val db = Firebase.database.reference
+            db.child("users").child(user.uid)
+                .setValue(userData)
+                .addOnSuccessListener {
+                    // Handle success
+                }
+                .addOnFailureListener {
+                    // Handle failure
+                }
+        }
+    }
+
+
     private val userRepository = UserRepository()
     val userData = MutableLiveData<User?>()
     val userLoadError = MutableLiveData<String>()
+
     // [START declare_auth]
     // [START initialize_auth]
     private val auth = Firebase.auth
@@ -127,7 +156,7 @@ class AuthViewModel : ViewModel() {
     }
 
     enum class AuthenticationState {
-        AUTHENTICATED, FAILED, USER_NOT_FOUND, NEW_USER
+        AUTHENTICATED, FAILED, USER_NOT_FOUND, NEW_USER, USER_ALREADY_EXISTS
     }
 
     // REMINDER : Resend verification logic
@@ -150,10 +179,10 @@ class AuthViewModel : ViewModel() {
                     userRepository.doesUserExist(it.uid) { exists ->
                         if (exists) {
                             // User exists in the database
-                            authenticationState.value = AuthenticationState.AUTHENTICATED
+                            authenticationState.value = AuthenticationState.USER_ALREADY_EXISTS
                         } else {
                             // User does not exist in the database, navigate to userDetails
-                            authenticationState.value = AuthenticationState.USER_NOT_FOUND
+                            authenticationState.value = AuthenticationState.NEW_USER
                         }
                     }
                 }
@@ -172,13 +201,47 @@ class AuthViewModel : ViewModel() {
         userRepository.writeUser(user)
     }
 
-    fun getUser(userId: String) {
-        userRepository.readUser(userId, onSuccess = { user ->
+    fun getUser(uid: String) {
+        userRepository.readUser(uid, onSuccess = { user ->
             // Handle user data
-            userData.value = user // Assign the retrieved user to the LiveData
+            userData.value = user
         }, onFailure = { exception ->
             // Handle failure
             userLoadError.value = exception?.message ?: "Unknown error occurred"
         })
+    }
+
+    fun signUpWithEmailPassword(email: String, password: String) = viewModelScope.launch {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // User is created, now check if they exist in database
+                    userRepository.doesUserExist(auth.currentUser!!.uid) { exists ->
+                        if (exists) {
+                            // User exists go to login
+                            authenticationState.value = AuthenticationState.USER_ALREADY_EXISTS
+                        } else {
+                            // New user go to signup
+                            authenticationState.value = AuthenticationState.NEW_USER
+                        }
+                    }
+                } else {
+                    // Handle failure
+                }
+            }
+    }
+
+
+    fun signInWithEmailPassword(email: String, password: String) = viewModelScope.launch {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Authentication succeeded
+                    authenticationState.value = AuthenticationState.AUTHENTICATED
+                } else {
+                    // Authentication failed
+                    authenticationState.value = AuthenticationState.FAILED
+                }
+            }
     }
 }

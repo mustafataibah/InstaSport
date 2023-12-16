@@ -24,7 +24,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.amt.instasport.AuthViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -33,6 +35,7 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun UserInfoScreen(navController: NavHostController? = null) {
+    val viewModel: AuthViewModel = viewModel()
     val pagerState = rememberPagerState(
         pageCount = 4
     )
@@ -50,9 +53,9 @@ fun UserInfoScreen(navController: NavHostController? = null) {
                 verticalArrangement = Arrangement.Center
             ) {
                 when (page) {
-                    0 -> AgeInput()
-                    1 -> NameInput()
-                    2 -> GenderInput()
+                    0 -> AgeInput(viewModel)
+                    1 -> NameInput(viewModel)
+                    2 -> GenderInput(viewModel)
                     3 -> Spacer(modifier = Modifier.fillMaxSize())
                 }
             }
@@ -64,7 +67,8 @@ fun UserInfoScreen(navController: NavHostController? = null) {
 
         if (pagerState.currentPage == 3) {
             LaunchedEffect(Unit) {
-                navController?.popBackStack()
+                // Why is this not popping userInfo from backstack??? because after a user goes to dashboard and swipes left they can go back to this page
+                viewModel.uploadUserDataToDatabase()
                 navController?.navigate("dashboard")
             }
         }
@@ -72,15 +76,19 @@ fun UserInfoScreen(navController: NavHostController? = null) {
 }
 
 @Composable
-fun AgeInput() {
+fun AgeInput(viewModel: AuthViewModel) {
     var age by remember { mutableStateOf("") }
     Text(
         text = "How old are you?", fontSize = 18.sp, fontWeight = FontWeight.Bold
     )
 
     Spacer(Modifier.height(8.dp))
-    OutlinedTextField(value = age,
-        onValueChange = { age = it },
+    OutlinedTextField(
+        value = age,
+        onValueChange = {
+            age = it
+            viewModel.tempUserAge.value = age
+        },
         label = { Text("Age") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true
@@ -89,22 +97,22 @@ fun AgeInput() {
 
 
 @Composable
-fun NameInput() {
+fun NameInput(viewModel: AuthViewModel) {
     var name by remember { mutableStateOf("") }
     Text(
         text = "What should we call you?", fontSize = 18.sp, fontWeight = FontWeight.Bold
     )
     Spacer(Modifier.height(8.dp))
-    OutlinedTextField(value = name,
-        onValueChange = { name = it },
-        label = { Text("Name") },
-        singleLine = true
+    OutlinedTextField(value = name, onValueChange = {
+        name = it
+        viewModel.tempUserName.value = name
+    }, label = { Text("Name") }, singleLine = true
     )
 }
 
 
 @Composable
-fun GenderInput() {
+fun GenderInput(viewModel: AuthViewModel) {
     val genderOptions = listOf("Male", "Female", "Other")
     var selectedGender by remember { mutableStateOf(genderOptions[0]) }
 
@@ -116,9 +124,10 @@ fun GenderInput() {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RadioButton(
-                selected = (gender == selectedGender),
-                onClick = { selectedGender = gender })
+            RadioButton(selected = (gender == selectedGender), onClick = {
+                selectedGender = gender
+                viewModel.tempUserGender.value = gender
+            })
             Text(text = gender, modifier = Modifier.padding(start = 8.dp))
         }
     }

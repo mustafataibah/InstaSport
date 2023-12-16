@@ -13,7 +13,7 @@ class UserRepository {
     private val userRef = database.getReference("users")
 
     fun writeUser(user: User) {
-        userRef.child(user.userId).setValue(user)
+        userRef.child(user.uid).setValue(user)
     }
 
     fun readUser(userId: String, onSuccess: (User?) -> Unit, onFailure: (Exception?) -> Unit) {

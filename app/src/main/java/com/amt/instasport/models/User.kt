@@ -1,6 +1,9 @@
 package com.amt.instasport.models
 
 data class User(
-    val userId: String,
-    val userEmail: String
+    val uid: String,
+    val name: String,
+    val age: Int,
+    val gender: String,
 )
+
