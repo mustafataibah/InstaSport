@@ -31,12 +31,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.amt.instasport.AuthViewModel
 import com.amt.instasport.R
+import com.amt.instasport.auth.AuthenticationManager
+import com.amt.instasport.auth.UserDatabaseManager
+import com.amt.instasport.ui.viewmodel.AuthViewModel
+import com.amt.instasport.ui.viewmodel.AuthViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun PhoneSignUpScreen(navController: NavController? = null) {
-    val viewModel: AuthViewModel = viewModel()
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val authenticationManager = AuthenticationManager(firebaseAuth)
+    val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
+    val factory = AuthViewModelFactory(authenticationManager, userDatabaseManager)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
     val authState by viewModel.authenticationState.observeAsState()
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }

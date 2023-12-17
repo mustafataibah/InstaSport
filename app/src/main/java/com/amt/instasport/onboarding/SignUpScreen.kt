@@ -48,10 +48,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.amt.instasport.AuthViewModel
 import com.amt.instasport.R
+import com.amt.instasport.auth.AuthenticationManager
+import com.amt.instasport.auth.UserDatabaseManager
+import com.amt.instasport.ui.viewmodel.AuthViewModel
+import com.amt.instasport.ui.viewmodel.AuthViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun SignUpScreen(navController: NavController? = null) {
@@ -63,7 +68,12 @@ fun SignUpScreen(navController: NavController? = null) {
     val isPasswordValid =
         remember(password) { password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } }
     val focusManager = LocalFocusManager.current
-    val viewModel: AuthViewModel = viewModel()
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val authenticationManager = AuthenticationManager(firebaseAuth)
+    val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
+    val factory = AuthViewModelFactory(authenticationManager, userDatabaseManager)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
     val authState by viewModel.authenticationState.observeAsState()
 
     val googleSignInLauncher = rememberLauncherForActivityResult(

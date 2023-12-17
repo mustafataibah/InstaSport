@@ -1,4 +1,4 @@
-package com.amt.instasport.models
+package com.amt.instasport.data.model
 
 data class User(
     val uid: String,

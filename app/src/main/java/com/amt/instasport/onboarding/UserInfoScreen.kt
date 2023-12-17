@@ -26,16 +26,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.amt.instasport.AuthViewModel
+import com.amt.instasport.auth.AuthenticationManager
+import com.amt.instasport.auth.UserDatabaseManager
+import com.amt.instasport.ui.viewmodel.AuthViewModel
+import com.amt.instasport.ui.viewmodel.AuthViewModelFactory
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun UserInfoScreen(navController: NavHostController? = null) {
-    val viewModel: AuthViewModel = viewModel()
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val authenticationManager = AuthenticationManager(firebaseAuth)
+    val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
+    val factory = AuthViewModelFactory(authenticationManager, userDatabaseManager)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
     val pagerState = rememberPagerState(
         pageCount = 4
     )
