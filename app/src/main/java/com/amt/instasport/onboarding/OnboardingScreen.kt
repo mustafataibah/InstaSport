@@ -1,6 +1,5 @@
 package com.amt.instasport.onboarding
 
-import android.content.Context
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +32,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.amt.instasport.MainActivity
 import com.amt.instasport.R
 import com.amt.instasport.ui.theme.Lavender
 import com.amt.instasport.ui.theme.SecondPurple
@@ -45,8 +43,7 @@ import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
-    // Using these animations I got online for now, will change them later
+fun OnboardingScreen(navController: NavHostController) {
     val animations = listOf(
         R.raw.animation, R.raw.animation, R.raw.animation
     )
@@ -105,7 +102,7 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     }
 
     ButtonsSection(
-        pagerState = pagerState, navController = navController, context = context
+        pagerState = pagerState, navController = navController
     )
 
 }
@@ -113,9 +110,7 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ButtonsSection(
-    pagerState: PagerState,
-    navController: NavHostController,
-    context: MainActivity
+    pagerState: PagerState, navController: NavHostController
 ) {
     Box(
         modifier = Modifier
@@ -125,7 +120,6 @@ fun ButtonsSection(
         if (pagerState.currentPage == 2) {
             OutlinedButton(
                 onClick = {
-                    onBoardingIsFinished(context = context)
                     navController.popBackStack()
                     navController.navigate("landing")
                 },
@@ -173,12 +167,4 @@ fun IndicatorSingleDot(isSelected: Boolean) {
             .clip(CircleShape)
             .background(if (isSelected) Lavender else SecondPurple)
     )
-}
-
-private fun onBoardingIsFinished(context: MainActivity) {
-    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    editor.putBoolean("isFinished", true)
-    editor.apply()
-
 }

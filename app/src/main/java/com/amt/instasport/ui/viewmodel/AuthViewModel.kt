@@ -1,28 +1,24 @@
 package com.amt.instasport.ui.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amt.instasport.auth.AuthenticationManager
-import com.amt.instasport.auth.UserDatabaseManager
-import com.amt.instasport.data.model.User
+import com.amt.instasport.managers.AuthenticationManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authenticationManager: AuthenticationManager,
-    private val userDatabaseManager: UserDatabaseManager
+    private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
-    var tempUserName = mutableStateOf("")
-    var tempUserAge = mutableStateOf("")
-    var tempUserGender = mutableStateOf("")
-
     // LiveData to notify the UI about authentication status
     val authenticationState = MutableLiveData<AuthenticationState>()
+
+    fun getCurrentUserId(): String? {
+        return authenticationManager.currentUserId
+    }
 
     fun signInWithEmailPassword(email: String, password: String) {
         viewModelScope.launch {
@@ -70,22 +66,30 @@ class AuthViewModel(
         }
     }
 
-    fun uploadUserDataToDatabase() {
-        authenticationManager.currentUserId?.let { userId ->
-            val user = User(
-                uid = userId,
-                name = tempUserName.value,
-                age = tempUserAge.value.toIntOrNull() ?: 0,
-                gender = tempUserGender.value
-            )
-            viewModelScope.launch {
-                userDatabaseManager.uploadUserDataToDatabase(user)
-            }
-        } ?: run {
-        }
-    }
-
     enum class AuthenticationState {
         AUTHENTICATED, FAILED, USER_NOT_FOUND, NEW_USER, USER_ALREADY_EXISTS
     }
+
+    //    private suspend fun fetchUserData() {
+//        authenticationManager.currentUserId?.let { userId ->
+//            Log.d("AuthViewModel", "Fetching data for user ID: $userId")
+//            val user = userDatabaseManager.getUserDataFromDatabase(userId)
+//            Log.d("AuthViewModel", "Fetched user data: $user")
+//            currentUser.value = user
+//        }
+//    }
+//    fun uploadUserDataToDatabase() {
+//        authenticationManager.currentUserId?.let { userId ->
+//            val user = User(
+//                uid = userId,
+//                name = tempUserName.value,
+//                age = tempUserAge.value.toIntOrNull() ?: 0,
+//                gender = tempUserGender.value
+//            )
+//            viewModelScope.launch {
+//                userDatabaseManager.uploadUserDataToDatabase(user)
+//            }
+//        } ?: run {
+//        }
+//    }
 }

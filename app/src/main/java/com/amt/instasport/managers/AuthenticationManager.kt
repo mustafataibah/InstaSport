@@ -1,4 +1,4 @@
-package com.amt.instasport.auth
+package com.amt.instasport.managers
 
 import android.util.Log
 import com.amt.instasport.data.util.formatToUSPhoneNumber

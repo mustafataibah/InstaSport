@@ -46,62 +46,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amt.instasport.R
-import com.amt.instasport.auth.AuthenticationManager
-import com.amt.instasport.auth.UserDatabaseManager
 import com.amt.instasport.ui.viewmodel.AuthViewModel
-import com.amt.instasport.ui.viewmodel.AuthViewModelFactory
+import com.amt.instasport.ui.viewmodel.UserDataViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 @Composable
-fun LoginScreen(navController: NavController? = null) {
+fun LoginScreen(
+    navController: NavController? = null,
+    authViewModel: AuthViewModel,
+    userDataViewModel: UserDataViewModel
+) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val authState by authViewModel.authenticationState.observeAsState()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
-    val firebaseAuth = FirebaseAuth.getInstance()
-    val firebaseDatabase = FirebaseDatabase.getInstance()
-    val authenticationManager = AuthenticationManager(firebaseAuth)
-    val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
-    val factory = AuthViewModelFactory(authenticationManager, userDatabaseManager)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
-    val authState by viewModel.authenticationState.observeAsState()
 
     LaunchedEffect(authState) {
         when (authState) {
-            AuthViewModel.AuthenticationState.USER_NOT_FOUND -> navController?.navigate("userInfo")
             AuthViewModel.AuthenticationState.AUTHENTICATED -> {
+                authViewModel.getCurrentUserId()?.let { userId ->
+                    userDataViewModel.fetchUserData(userId)
+                }
                 navController?.navigate("dashboard")
             }
-
-            AuthViewModel.AuthenticationState.FAILED -> {
-                // Handle authentication failure
-            }
+            // TODO: Handle invalid email, wrong password, account already exists, and other cases
             else -> {
-                // Handle any other case or do nothing
             }
         }
     }
 
-    // Google Sign-In Launcher
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)
-            viewModel.firebaseAuthWithGoogle(account.idToken!!)
+            authViewModel.firebaseAuthWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
-            // Handle exception
+            // TODO: Handle exceptions
         }
     }
 
@@ -160,7 +150,7 @@ fun LoginScreen(navController: NavController? = null) {
             }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = { viewModel.signInWithEmailPassword(email, password) },
+                onClick = { authViewModel.signInWithEmailPassword(email, password) },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,7 +182,7 @@ fun LoginScreen(navController: NavController? = null) {
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.ic_google),
                     onClick = {
-                        val client = viewModel.getGoogleSignInClient(context)
+                        val client = authViewModel.getGoogleSignInClient(context)
                         val signInIntent = client.signInIntent
                         googleSignInLauncher.launch(signInIntent)
                     },
@@ -201,6 +191,7 @@ fun LoginScreen(navController: NavController? = null) {
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
+                    // TODO: Create a new phoneLogin screen similar to phoneSignUp but different title and nav
                     onClick = { navController?.navigate("phoneSignUp") },
                     modifier = Modifier.weight(1f)
                 )
@@ -238,10 +229,4 @@ fun SocialLoginButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier
         )
 
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoginScreen() {
-    LoginScreen()
 }

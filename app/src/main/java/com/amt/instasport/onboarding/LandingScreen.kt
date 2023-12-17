@@ -50,13 +50,11 @@ fun LandingScreen(navController: NavController) {
                 .weight(0.6f)
         )
 
-        // Buttons and clickable text
         Column(
             modifier = Modifier.weight(2f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        )
-        {
+        ) {
             Button(
                 onClick = { navController.navigate("signUp") },
                 shape = RoundedCornerShape(8.dp),
@@ -83,8 +81,7 @@ fun LandingScreen(navController: NavController) {
                     .height(50.dp)
             ) {
                 Text(
-                    "Login",
-                    color = MaterialTheme.colorScheme.primary
+                    "Login", color = MaterialTheme.colorScheme.primary
                 )
             }
         }

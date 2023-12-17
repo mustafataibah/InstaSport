@@ -27,34 +27,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amt.instasport.R
-import com.amt.instasport.auth.AuthenticationManager
-import com.amt.instasport.auth.UserDatabaseManager
 import com.amt.instasport.ui.viewmodel.AuthViewModel
-import com.amt.instasport.ui.viewmodel.AuthViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
+// TODO: Animate fade in of the picture when the verification code is sent
 @Composable
-fun PhoneSignUpScreen(navController: NavController? = null) {
-    val firebaseAuth = FirebaseAuth.getInstance()
-    val firebaseDatabase = FirebaseDatabase.getInstance()
-    val authenticationManager = AuthenticationManager(firebaseAuth)
-    val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
-    val factory = AuthViewModelFactory(authenticationManager, userDatabaseManager)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
-    val authState by viewModel.authenticationState.observeAsState()
+fun PhoneSignUpScreen(navController: NavController? = null, authViewModel: AuthViewModel) {
+    val authState by authViewModel.authenticationState.observeAsState()
+
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
     var isCodeSent by remember { mutableStateOf(false) }
 
+
     LaunchedEffect(authState) {
-        if (authState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-            navController?.navigate("userInfo") {
+        when (authState) {
+            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
+                // TODO: Fetch data and save to view-model when authenticated
+                navController?.navigate("userInfo")
+            }
+            // TODO: Handle exceptions
+            else -> {
             }
         }
     }
@@ -102,8 +97,8 @@ fun PhoneSignUpScreen(navController: NavController? = null) {
 
             Button(
                 onClick = {
-                    Log.d(TAG, "Start Phone Number Verification : $phoneNumber")
-                    viewModel.startPhoneNumberVerification(phoneNumber)
+                    Log.d("RegisterScreen", "Start Phone Number Verification : $phoneNumber")
+                    authViewModel.startPhoneNumberVerification(phoneNumber)
                     isCodeSent = true
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -125,8 +120,8 @@ fun PhoneSignUpScreen(navController: NavController? = null) {
 
             Button(
                 onClick = {
-                    viewModel.verifyPhoneNumberWithCode(
-                        viewModel.storedVerificationId,
+                    authViewModel.verifyPhoneNumberWithCode(
+                        authViewModel.storedVerificationId,
                         verificationCode
                     )
                 },
@@ -159,11 +154,3 @@ fun VerificationImage(isCodeSent: Boolean) {
         )
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewPhoneSignUpScreen() {
-    PhoneSignUpScreen()
-}
-
-private const val TAG = "RegisterScreen"

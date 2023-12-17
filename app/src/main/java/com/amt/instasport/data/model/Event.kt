@@ -1,11 +1,13 @@
-//package com.amt.instasport.data.model
-//
-//data class Event(
-//    val eventId: String,
-//    val title: String,
-//    val sportType: String,
-//    val numberOfPlayers: Int,
-//    val time: String,
-//    val level: String,
-//    val location: String, // how does this work with google maps?, maybe needs longitude latitude idk
-//)
+package com.amt.instasport.data.model
+
+data class Event(
+    val eventId: String,
+    val hostUserId: String,
+    val title: String,
+    val sportType: SportsInterest,
+    val eventLocation: String,
+    val dateTime: String,
+    val maxParticipants: Int,
+    val description: String,
+    val level: String,
+)

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -15,44 +14,51 @@ import com.amt.instasport.onboarding.OnboardingScreen
 import com.amt.instasport.onboarding.PhoneSignUpScreen
 import com.amt.instasport.onboarding.SignUpScreen
 import com.amt.instasport.onboarding.UserInfoScreen
+import com.amt.instasport.ui.viewmodel.AuthViewModel
+import com.amt.instasport.ui.viewmodel.UserDataViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    authViewModel: AuthViewModel,
+    userDataViewModel: UserDataViewModel,
+//    eventsViewModel: EventsViewModel
+) {
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-    val context = LocalContext.current
-//    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-//    val isOnboardingFinished by remember {
-//        mutableStateOf(sharedPreferences.getBoolean("isFinished", false))
-//    }
-//    val startDestination = if (isOnboardingFinished) "landing" else "onboarding"
 
-    Scaffold(
-        topBar = {
-            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
-                currentDestination?.route?.let { TopBar(title = it, navController) }
-            }
-        },
-        bottomBar = {
-            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
-                BottomNavBar(navController)
-            }
+    Scaffold(topBar = {
+        if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+            currentDestination?.route?.let { TopBar(title = it, navController) }
         }
-    ) { innerPadding ->
-        NavHost(navController = navController, startDestination = "onboarding", modifier = Modifier.padding(innerPadding)) {
+    }, bottomBar = {
+        if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+            BottomNavBar(navController)
+        }
+    }) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "onboarding",
+            modifier = Modifier.padding(innerPadding)
+        ) {
             // Onboarding Screens
-            composable("onboarding") { OnboardingScreen(navController, context as MainActivity) }
+            composable("onboarding") { OnboardingScreen(navController) }
             composable("landing") { LandingScreen(navController) }
-            composable("login") { LoginScreen(navController) }
-            composable("signUp") { SignUpScreen(navController) }
-            composable("phoneSignUp") { PhoneSignUpScreen(navController) }
-            composable("userInfo") { UserInfoScreen(navController) }
+            composable("login") { LoginScreen(navController, authViewModel, userDataViewModel) }
+            composable("signUp") { SignUpScreen(navController, authViewModel) }
+            composable("phoneSignUp") { PhoneSignUpScreen(navController, authViewModel) }
+            composable("userInfo") {
+                UserInfoScreen(
+                    navController,
+                    authViewModel,
+                    userDataViewModel
+                )
+            }
 
-            // Dashboard
+            // Main App Screens
             composable("dashboard") { DashboardScreen(navController) }
             composable("host") { HostScreen(navController) }
             composable("events") { EventsScreen(navController) }
-            composable("profile") { ProfileScreen(navController) }
+            composable("profile") { ProfileScreen(navController, userDataViewModel) }
         }
     }
 }
