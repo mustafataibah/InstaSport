@@ -1,6 +1,7 @@
 package com.amt.instasport.ui.component
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
@@ -36,6 +37,20 @@ fun TopBar(title: String, navController: NavController) {
                 fontSize = 20.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
+        },
+        navigationIcon = {
+            val navIcon = when (currentRoute) {
+                "host" -> Icons.Default.ArrowBack
+                else -> null
+            }
+            IconButton(onClick = { navController?.navigateUp() }) {
+                if (navIcon != null) {
+                    Icon(
+                        imageVector = navIcon,
+                        contentDescription = "Back"
+                    )
+                }
+            }
         },
         actions = {
             val settingsIcon = when (currentRoute) {
