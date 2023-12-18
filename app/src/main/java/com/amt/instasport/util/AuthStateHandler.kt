@@ -20,7 +20,6 @@ fun HandleAuthState(
         when (authState) {
             AuthViewModel.AuthenticationState.NEW_USER -> navController.navigate("userInfo")
             AuthViewModel.AuthenticationState.NEW_USER_GOOGLE -> navController.navigate("userInfo")
-            AuthViewModel.AuthenticationState.AUTHENTICATED -> navController.navigate("dashboard")
             // Add other cases
             else -> {}
         }

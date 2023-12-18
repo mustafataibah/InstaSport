@@ -9,9 +9,9 @@ import com.amt.instasport.manager.UserDatabaseManager
 import com.amt.instasport.repository.UserRepository
 import com.amt.instasport.ui.theme.InstaSportTheme
 import com.amt.instasport.viewmodel.AuthViewModel
+import com.amt.instasport.viewmodel.AuthViewModelFactory
 import com.amt.instasport.viewmodel.UserDataViewModel
-import com.amt.instasport.viewmodel.factory.AuthViewModelFactory
-import com.amt.instasport.viewmodel.factory.UserDataViewModelFactory
+import com.amt.instasport.viewmodel.UserDataViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
