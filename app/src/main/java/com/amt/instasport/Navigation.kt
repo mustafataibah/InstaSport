@@ -29,12 +29,12 @@ fun AppNavigation() {
 
     Scaffold(
         topBar = {
-            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile", "settings")) {
                 currentDestination?.route?.let { TopBar(title = it, navController) }
             }
         },
         bottomBar = {
-            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+            if (currentDestination?.route in listOf("dashboard", "host", "events", "profile", "settings")) {
                 BottomNavBar(navController)
             }
         }
@@ -53,6 +53,7 @@ fun AppNavigation() {
             composable("host") { HostScreen(navController) }
             composable("events") { EventsScreen(navController) }
             composable("profile") { ProfileScreen(navController) }
+            composable("settings") { SettingsScreen(navController) }
         }
     }
 }

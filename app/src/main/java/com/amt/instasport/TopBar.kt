@@ -2,7 +2,9 @@ package com.amt.instasport
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,6 +15,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -30,14 +33,28 @@ fun TopBar(title: String, navController: NavController) {
         title = {
             Text(
                 text = capitalizedTitle,
+                fontSize = 20.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
         },
         actions = {
-            val icon = if (currentRoute == "profile") Icons.Filled.Person else Icons.Outlined.Person
+            val settingsIcon = when (currentRoute) {
+                "profile" -> Icons.Outlined.Settings
+                "settings" -> Icons.Filled.Settings
+                else -> null
+            }
+            IconButton(onClick = { navController.navigate("settings") }) {
+                if (settingsIcon != null) {
+                    Icon(
+                        imageVector = settingsIcon,
+                        contentDescription = "Settings"
+                    )
+                }
+            }
+            val profileIcon = if (currentRoute == "profile") Icons.Filled.Person else Icons.Outlined.Person
             IconButton(onClick = { navController.navigate("profile") }) {
                 Icon(
-                    imageVector = icon,
+                    imageVector = profileIcon,
                     contentDescription = "Profile"
                 )
             }
