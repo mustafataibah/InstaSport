@@ -15,7 +15,7 @@ import com.amt.instasport.ui.component.TopBar
 import com.amt.instasport.ui.onboarding.LandingScreen
 import com.amt.instasport.ui.onboarding.LoginScreen
 import com.amt.instasport.ui.onboarding.OnboardingScreen
-import com.amt.instasport.ui.onboarding.PhoneSignUpScreen
+import com.amt.instasport.ui.onboarding.PhoneAuthScreen
 import com.amt.instasport.ui.onboarding.SignUpScreen
 import com.amt.instasport.ui.onboarding.UserInfoScreen
 import com.amt.instasport.ui.view.EventsScreen
@@ -66,7 +66,10 @@ fun AppNavigation(
             composable("landing") { LandingScreen(navController) }
             composable("login") { LoginScreen(navController, authViewModel, userDataViewModel) }
             composable("signUp") { SignUpScreen(navController, authViewModel) }
-            composable("phoneSignUp") { PhoneSignUpScreen(navController, authViewModel) }
+            composable("phoneSignUp/{signUpOrLogin}") { backStackEntry ->
+                val signUpOrLogin = backStackEntry.arguments?.getString("signUpOrLogin") ?: "SignUp"
+                PhoneAuthScreen(navController, authViewModel, signUpOrLogin)
+            }
             composable("userInfo") {
                 UserInfoScreen(
                     navController,

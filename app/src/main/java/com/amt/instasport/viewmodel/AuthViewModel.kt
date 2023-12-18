@@ -3,12 +3,25 @@ package com.amt.instasport.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.amt.instasport.manager.AuthenticationManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.launch
+
+
+class AuthViewModelFactory(
+    private val authenticationManager: AuthenticationManager,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST") return AuthViewModel(authenticationManager) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 
 class AuthViewModel(
     private val authenticationManager: AuthenticationManager
@@ -37,8 +50,7 @@ class AuthViewModel(
     fun signOutFromGoogle(context: Context) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("839331351515-otct4f6br104ae23ihjm22tlr5hauv8p.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
+            .requestEmail().build()
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         googleSignInClient.signOut()
     }
@@ -53,8 +65,7 @@ class AuthViewModel(
     fun getGoogleSignInClient(context: Context): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("839331351515-otct4f6br104ae23ihjm22tlr5hauv8p.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
+            .requestEmail().build()
 
         return GoogleSignIn.getClient(context, gso)
     }
@@ -76,6 +87,13 @@ class AuthViewModel(
     }
 
     enum class AuthenticationState {
-        AUTHENTICATED, FAILED, NEW_USER, USER_ALREADY_EXISTS, NEW_USER_GOOGLE, INVALID_EMAIL, WEAK_PASSWORD,
+        AUTHENTICATED_EMAIL, AUTHENTICATED_GOOGLE, AUTHENTICATED_PHONE,
+        NEW_USER, USER_ALREADY_EXISTS, NEW_USER_GOOGLE, INVALID_EMAIL,
+        WEAK_PASSWORD, INVALID_USER, INVALID_CREDENTIALS,
+        EMAIL_ASSOCIATED_WITH_GOOGLE, FAILED, INVALID_PHONE_CODE,
+        INVALID_PHONE_NUMBER, PHONE_NUMBER_ALREADY_EXISTS, NEW_USER_PHONE
     }
 }
+
+
+

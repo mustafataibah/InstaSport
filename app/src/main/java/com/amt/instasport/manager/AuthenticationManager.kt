@@ -1,11 +1,13 @@
 package com.amt.instasport.manager
 
-import android.util.Log
 import com.amt.instasport.util.formatToUSPhoneNumber
 import com.amt.instasport.viewmodel.AuthViewModel.AuthenticationState
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -20,7 +22,13 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
     suspend fun signInWithEmailPassword(email: String, password: String): AuthenticationState {
         return try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            AuthenticationState.AUTHENTICATED
+            AuthenticationState.AUTHENTICATED_EMAIL
+        } catch (e: FirebaseAuthInvalidUserException) {
+            AuthenticationState.INVALID_USER
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            AuthenticationState.INVALID_CREDENTIALS
+        } catch (e: FirebaseAuthUserCollisionException) {
+            AuthenticationState.EMAIL_ASSOCIATED_WITH_GOOGLE
         } catch (e: Exception) {
             AuthenticationState.FAILED
         }
@@ -30,10 +38,10 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
         return try {
             firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             AuthenticationState.NEW_USER
-//        } catch (e: FirebaseAuthWeakPasswordException) {
-//            AuthenticationState.WEAK_PASSWORD
-//        } catch (e: FirebaseAuthInvalidCredentialsException) {
-//            AuthenticationState.INVALID_EMAIL
+        } catch (e: FirebaseAuthWeakPasswordException) {
+            AuthenticationState.WEAK_PASSWORD
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            AuthenticationState.INVALID_EMAIL
         } catch (e: FirebaseAuthUserCollisionException) {
             AuthenticationState.USER_ALREADY_EXISTS
         } catch (e: Exception) {
@@ -50,7 +58,7 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
             if (isNewUser) {
                 AuthenticationState.NEW_USER_GOOGLE
             } else {
-                AuthenticationState.AUTHENTICATED
+                AuthenticationState.AUTHENTICATED_GOOGLE
             }
         } catch (e: FirebaseAuthUserCollisionException) {
             AuthenticationState.USER_ALREADY_EXISTS
@@ -64,20 +72,19 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            // Handle automatic SMS verification and sign in the user
-            Log.d("AuthenticationManager", "onVerificationCompleted:$credential")
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            // Handle verification failure
-            Log.w("AuthenticationManager", "onVerificationFailed", e)
+            when (e) {
+                is FirebaseAuthInvalidCredentialsException -> AuthenticationState.INVALID_PHONE_NUMBER
+                else -> AuthenticationState.FAILED
+            }
         }
 
         override fun onCodeSent(
             verificationId: String,
             token: PhoneAuthProvider.ForceResendingToken
         ) {
-            Log.d("AuthenticationManager", "onCodeSent:$verificationId")
             storedVerificationId = verificationId
             resendToken = token
         }
@@ -85,7 +92,6 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
 
     fun startPhoneNumberVerification(phoneNumber: String) {
         val updatedPhoneNumber = formatToUSPhoneNumber(phoneNumber)
-        Log.d("AuthenticationManager", "Updated Phone Number: $updatedPhoneNumber")
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
             .setPhoneNumber(updatedPhoneNumber)
             .setTimeout(60L, TimeUnit.SECONDS)
@@ -102,13 +108,23 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
             return AuthenticationState.FAILED
         }
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
-        return signInWithPhoneAuthCredential(credential)
+        return firebaseAuthWithPhone(credential)
     }
 
-    private suspend fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential): AuthenticationState {
+    private suspend fun firebaseAuthWithPhone(credential: PhoneAuthCredential): AuthenticationState {
         return try {
-            firebaseAuth.signInWithCredential(credential).await()
-            AuthenticationState.AUTHENTICATED
+            val authResult = firebaseAuth.signInWithCredential(credential).await()
+            val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+
+            if (isNewUser) {
+                AuthenticationState.NEW_USER_PHONE
+            } else {
+                AuthenticationState.AUTHENTICATED_PHONE
+            }
+        } catch (e: FirebaseAuthUserCollisionException) {
+            AuthenticationState.PHONE_NUMBER_ALREADY_EXISTS
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            AuthenticationState.INVALID_PHONE_CODE
         } catch (e: Exception) {
             AuthenticationState.FAILED
         }

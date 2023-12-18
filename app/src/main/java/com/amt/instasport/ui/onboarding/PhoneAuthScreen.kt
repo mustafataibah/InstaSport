@@ -1,6 +1,7 @@
 package com.amt.instasport.ui.onboarding
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,8 +36,13 @@ import com.amt.instasport.viewmodel.AuthViewModel
 
 // TODO: Animate fade in of the picture when the verification code is sent
 @Composable
-fun PhoneSignUpScreen(navController: NavController? = null, authViewModel: AuthViewModel) {
+fun PhoneAuthScreen(
+    navController: NavController? = null,
+    authViewModel: AuthViewModel,
+    signUpOrLogin: String
+) {
     val authState by authViewModel.authenticationState.observeAsState()
+    val context = LocalContext.current
 
     var phoneNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
@@ -44,11 +51,28 @@ fun PhoneSignUpScreen(navController: NavController? = null, authViewModel: AuthV
 
     LaunchedEffect(authState) {
         when (authState) {
-            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
-                // TODO: Fetch data and save to view-model when authenticated
-                navController?.navigate("userInfo")
+            AuthViewModel.AuthenticationState.FAILED ->
+                Toast.makeText(context, "Something went wrong try again", Toast.LENGTH_SHORT).show()
+
+            AuthViewModel.AuthenticationState.NEW_USER_PHONE -> navController?.navigate("userInfo")
+            AuthViewModel.AuthenticationState.INVALID_PHONE_CODE ->
+                Toast.makeText(
+                    context,
+                    "Invalid phone number, please check and retry",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            AuthViewModel.AuthenticationState.PHONE_NUMBER_ALREADY_EXISTS ->
+                Toast.makeText(
+                    context,
+                    "This phone number is already associated with an account please login",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            AuthViewModel.AuthenticationState.AUTHENTICATED_PHONE -> {
+                navController?.navigate("dashboard")
             }
-            // TODO: Handle exceptions
+
             else -> {
             }
         }
@@ -66,7 +90,7 @@ fun PhoneSignUpScreen(navController: NavController? = null, authViewModel: AuthV
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            "Sign Up",
+            if (signUpOrLogin == "SignUp") "Sign Up" else "Login",
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.SemiBold
         )

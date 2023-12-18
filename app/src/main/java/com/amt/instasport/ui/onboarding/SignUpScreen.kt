@@ -1,5 +1,6 @@
 package com.amt.instasport.ui.onboarding
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import com.amt.instasport.R
 import com.amt.instasport.viewmodel.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuthException
 
 @Composable
 fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
@@ -60,9 +62,6 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    val isEmailValid = remember(email) { email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) }
-    val isPasswordValid =
-        remember(password) { password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } }
 
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -72,7 +71,16 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
             val account = task.getResult(ApiException::class.java)
             authViewModel.firebaseAuthWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
-            // Handle Exceptions later
+            Toast.makeText(context, "Google Sign-In failed: ${e.message}", Toast.LENGTH_LONG).show()
+        } catch (e: FirebaseAuthException) {
+            Toast.makeText(
+                context,
+                "Firebase authentication failed: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "An unexpected error occurred: ${e.message}", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -84,11 +92,42 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
         when (authState) {
             // Email/Password Auth States
             AuthViewModel.AuthenticationState.NEW_USER -> navController.navigate("userInfo")
-//            AuthViewModel.AuthenticationState.USER_ALREADY_EXISTS -> // TODO: Handle User Collision
+            AuthViewModel.AuthenticationState.USER_ALREADY_EXISTS ->
+                Toast.makeText(context, "User already exists. Please login.", Toast.LENGTH_SHORT)
+                    .show()
+
+            AuthViewModel.AuthenticationState.WEAK_PASSWORD ->
+                Toast.makeText(
+                    context,
+                    "Password is too weak. Please use a stronger password.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            AuthViewModel.AuthenticationState.INVALID_EMAIL ->
+                Toast.makeText(
+                    context,
+                    "Invalid email address. Please check and try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
 
             // Google Auth States
             AuthViewModel.AuthenticationState.NEW_USER_GOOGLE -> navController.navigate("userInfo")
-            AuthViewModel.AuthenticationState.AUTHENTICATED -> navController.navigate("dashboard")
+            AuthViewModel.AuthenticationState.AUTHENTICATED_GOOGLE -> {
+                navController.navigate("dashboard")
+                Toast.makeText(
+                    context,
+                    "This email is associated with a Google account, please login with Google",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            AuthViewModel.AuthenticationState.FAILED ->
+                Toast.makeText(
+                    context,
+                    "Something went wrong, please try again!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
             else -> {
             }
         }
@@ -148,7 +187,6 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                enabled = isEmailValid && isPasswordValid
             ) {
                 Text(
                     "Sign Up", fontSize = 16.sp
@@ -183,7 +221,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    onClick = { navController.navigate("phoneSignUp") },
+                    onClick = { navController.navigate("phoneSignUp/SignUp") },
                     modifier = Modifier.weight(1f)
                 )
             }

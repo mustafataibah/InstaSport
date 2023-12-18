@@ -55,6 +55,7 @@ import com.amt.instasport.viewmodel.AuthViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuthException
 
 @Composable
 fun LoginScreen(
@@ -72,12 +73,34 @@ fun LoginScreen(
 
     LaunchedEffect(authState) {
         when (authState) {
-            // 3 Cases when a user logs in
-            // 1- If logs in with google and email already exists AUTHENTICATED
-            // 2- Logs in with google and its a new account NEW_USER_GOOGLE
-            // 3- Wrong Email/Password FAILED
-            // 4-
-            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
+            AuthViewModel.AuthenticationState.FAILED ->
+                Toast.makeText(
+                    context,
+                    "Something went wrong, please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            // Email Auth States
+            AuthViewModel.AuthenticationState.AUTHENTICATED_EMAIL -> navController?.navigate("dashboard")
+            AuthViewModel.AuthenticationState.INVALID_USER -> {
+                Toast.makeText(context, "No user Associated with this email", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            AuthViewModel.AuthenticationState.INVALID_CREDENTIALS -> {
+                Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+            }
+
+            AuthViewModel.AuthenticationState.EMAIL_ASSOCIATED_WITH_GOOGLE -> {
+                Toast.makeText(
+                    context,
+                    "This email is associated with a google account, please sign in with google",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            // Google Auth States
+            AuthViewModel.AuthenticationState.AUTHENTICATED_GOOGLE -> {
                 authViewModel.getCurrentUserId()?.let { userId ->
                     userDataViewModel.fetchUserData(userId)
                 }
@@ -85,13 +108,14 @@ fun LoginScreen(
             }
 
             AuthViewModel.AuthenticationState.NEW_USER_GOOGLE -> {
+                Toast.makeText(
+                    context,
+                    "This email is not associated with any account, please sign up!",
+                    Toast.LENGTH_SHORT
+                ).show()
                 navController?.navigate("userInfo")
             }
 
-            AuthViewModel.AuthenticationState.FAILED -> {
-                Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_LONG).show()
-            }
-            // TODO: Handle invalid email, wrong password, account already exists, and other cases
             else -> {
             }
         }
@@ -105,7 +129,16 @@ fun LoginScreen(
             val account = task.getResult(ApiException::class.java)
             authViewModel.firebaseAuthWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
-            // TODO: Handle exceptions
+            Toast.makeText(context, "Google Sign-In failed: ${e.message}", Toast.LENGTH_LONG).show()
+        } catch (e: FirebaseAuthException) {
+            Toast.makeText(
+                context,
+                "Firebase authentication failed: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "An unexpected error occurred: ${e.message}", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -206,8 +239,7 @@ fun LoginScreen(
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
                     icon = ImageVector.vectorResource(R.drawable.baseline_smartphone_24),
-                    // TODO: Create a new phoneLogin screen similar to phoneSignUp but different title and nav
-                    onClick = { navController?.navigate("phoneSignUp") },
+                    onClick = { navController?.navigate("phoneSignUp/Login") },
                     modifier = Modifier.weight(1f)
                 )
             }
