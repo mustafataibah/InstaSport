@@ -78,27 +78,4 @@ class AuthViewModel(
     enum class AuthenticationState {
         AUTHENTICATED, FAILED, NEW_USER, USER_ALREADY_EXISTS, NEW_USER_GOOGLE, INVALID_EMAIL, WEAK_PASSWORD,
     }
-
-    //    private suspend fun fetchUserData() {
-//        authenticationManager.currentUserId?.let { userId ->
-//            Log.d("AuthViewModel", "Fetching data for user ID: $userId")
-//            val user = userDatabaseManager.getUserDataFromDatabase(userId)
-//            Log.d("AuthViewModel", "Fetched user data: $user")
-//            currentUser.value = user
-//        }
-//    }
-//    fun uploadUserDataToDatabase() {
-//        authenticationManager.currentUserId?.let { userId ->
-//            val user = User(
-//                uid = userId,
-//                name = tempUserName.value,
-//                age = tempUserAge.value.toIntOrNull() ?: 0,
-//                gender = tempUserGender.value
-//            )
-//            viewModelScope.launch {
-//                userDatabaseManager.uploadUserDataToDatabase(user)
-//            }
-//        } ?: run {
-//        }
-//    }
 }

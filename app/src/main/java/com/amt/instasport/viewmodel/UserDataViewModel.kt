@@ -1,6 +1,5 @@
 package com.amt.instasport.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,7 @@ class UserDataViewModel(private val userRepository: UserRepository) : ViewModel(
     fun uploadUserData(user: User) {
         viewModelScope.launch {
             userRepository.uploadUserData(user)
+            currentUserData.value = user
         }
     }
 
@@ -22,7 +22,6 @@ class UserDataViewModel(private val userRepository: UserRepository) : ViewModel(
         viewModelScope.launch {
             val user = userRepository.getUser(userId)
             currentUserData.value = user
-            Log.d("UserDataVM", "$currentUserData")
         }
     }
 }
