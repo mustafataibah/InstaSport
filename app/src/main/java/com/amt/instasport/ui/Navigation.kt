@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.amt.instasport.DashboardScreen
+import com.amt.instasport.ProfileScreen
 import com.amt.instasport.ui.component.BottomNavBar
 import com.amt.instasport.ui.component.TopBar
 import com.amt.instasport.ui.onboarding.LandingScreen
@@ -16,10 +18,9 @@ import com.amt.instasport.ui.onboarding.OnboardingScreen
 import com.amt.instasport.ui.onboarding.PhoneSignUpScreen
 import com.amt.instasport.ui.onboarding.SignUpScreen
 import com.amt.instasport.ui.onboarding.UserInfoScreen
-import com.amt.instasport.ui.view.DashboardScreen
 import com.amt.instasport.ui.view.EventsScreen
 import com.amt.instasport.ui.view.HostScreen
-import com.amt.instasport.ui.view.ProfileScreen
+import com.amt.instasport.ui.view.SettingsScreen
 import com.amt.instasport.viewmodel.AuthViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 
@@ -33,11 +34,25 @@ fun AppNavigation(
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
 
     Scaffold(topBar = {
-        if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+        if (currentDestination?.route in listOf(
+                "dashboard",
+                "host",
+                "events",
+                "profile",
+                "settings"
+            )
+        ) {
             currentDestination?.route?.let { TopBar(title = it, navController) }
         }
     }, bottomBar = {
-        if (currentDestination?.route in listOf("dashboard", "host", "events", "profile")) {
+        if (currentDestination?.route in listOf(
+                "dashboard",
+                "host",
+                "events",
+                "profile",
+                "settings"
+            )
+        ) {
             BottomNavBar(navController)
         }
     }) { innerPadding ->
@@ -65,6 +80,7 @@ fun AppNavigation(
             composable("host") { HostScreen(navController) }
             composable("events") { EventsScreen(navController) }
             composable("profile") { ProfileScreen(navController, userDataViewModel) }
+            composable("settings") { SettingsScreen(navController) }
         }
     }
 }

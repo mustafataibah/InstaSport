@@ -2,13 +2,22 @@ package com.amt.instasport
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.amt.instasport.R
 import com.amt.instasport.viewmodel.UserDataViewModel
 
 @Composable
@@ -36,9 +44,8 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
         verticalArrangement = Arrangement.Center,
     ) {
 
-        Column (
-            modifier = Modifier
-                .padding(bottom = 24.dp),
+        Column(
+            modifier = Modifier.padding(bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -58,18 +65,21 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
             Spacer(modifier = Modifier.height(16.dp))
 
 
-        currentUser?.let { user ->
-            Text(
-                text = user.name,
-                fontWeight = FontWeight.Bold
-            )
-        }
+            currentUser?.let { user ->
+                Text(
+                    text = user.name, fontWeight = FontWeight.Bold
+                )
+            }
 
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row () {
-                Icon(Icons.Filled.Place, contentDescription = "Location", modifier = Modifier.padding(end = 8.dp))
+            Row {
+                Icon(
+                    Icons.Filled.Place,
+                    contentDescription = "Location",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text(text = "Boston, MA", modifier = Modifier.padding(end = 8.dp))
             }
         }
@@ -104,8 +114,7 @@ fun SkillBlock(skill: String, level: String) {
             .padding(start = 16.dp, end = 16.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center
         ) {
             Text(text = skill, fontWeight = FontWeight.Bold)
             Text(text = level)
@@ -113,8 +122,4 @@ fun SkillBlock(skill: String, level: String) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewProfileScreen() {
-    ProfileScreen()
-}
+
