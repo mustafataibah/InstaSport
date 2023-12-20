@@ -8,8 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.amt.instasport.DashboardScreen
-import com.amt.instasport.ProfileScreen
 import com.amt.instasport.ui.component.BottomNavBar
 import com.amt.instasport.ui.component.TopBar
 import com.amt.instasport.ui.onboarding.LandingScreen
@@ -18,8 +16,11 @@ import com.amt.instasport.ui.onboarding.OnboardingScreen
 import com.amt.instasport.ui.onboarding.PhoneAuthScreen
 import com.amt.instasport.ui.onboarding.SignUpScreen
 import com.amt.instasport.ui.onboarding.UserInfoScreen
+import com.amt.instasport.ui.view.DashboardScreen
 import com.amt.instasport.ui.view.EventsScreen
+import com.amt.instasport.ui.view.GoogleMapComposable
 import com.amt.instasport.ui.view.HostScreen
+import com.amt.instasport.ui.view.ProfileScreen
 import com.amt.instasport.ui.view.SettingsScreen
 import com.amt.instasport.viewmodel.AuthViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
@@ -35,22 +36,14 @@ fun AppNavigation(
 
     Scaffold(topBar = {
         if (currentDestination?.route in listOf(
-                "dashboard",
-                "host",
-                "events",
-                "profile",
-                "settings"
+                "dashboard", "host", "events", "profile", "settings", "location"
             )
         ) {
             currentDestination?.route?.let { TopBar(title = it, navController) }
         }
     }, bottomBar = {
         if (currentDestination?.route in listOf(
-                "dashboard",
-                "host",
-                "events",
-                "profile",
-                "settings"
+                "dashboard", "host", "events", "profile", "settings"
             )
         ) {
             BottomNavBar(navController)
@@ -72,18 +65,18 @@ fun AppNavigation(
             }
             composable("userInfo") {
                 UserInfoScreen(
-                    navController,
-                    authViewModel,
-                    userDataViewModel
+                    navController, authViewModel, userDataViewModel
                 )
             }
 
             // Main App Screens
-            composable("dashboard") { DashboardScreen(navController, userDataViewModel) }
+            composable("dashboard") { DashboardScreen(userDataViewModel) }
             composable("host") { HostScreen(navController) }
-            composable("events") { EventsScreen(navController) }
-            composable("profile") { ProfileScreen(navController, userDataViewModel) }
-            composable("settings") { SettingsScreen(navController) }
+            composable("events") { EventsScreen() }
+            composable("profile") { ProfileScreen(userDataViewModel) }
+            composable("settings") { SettingsScreen(navController, authViewModel) }
+            composable("location") { GoogleMapComposable(navController) }
+
         }
     }
 }

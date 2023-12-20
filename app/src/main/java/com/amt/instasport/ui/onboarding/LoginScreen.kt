@@ -81,7 +81,13 @@ fun LoginScreen(
                 ).show()
 
             // Email Auth States
-            AuthViewModel.AuthenticationState.AUTHENTICATED_EMAIL -> navController?.navigate("dashboard")
+            AuthViewModel.AuthenticationState.AUTHENTICATED_EMAIL -> {
+                authViewModel.getCurrentUserId()?.let { userId ->
+                    userDataViewModel.fetchUserData(userId)
+                }
+                navController?.navigate("dashboard")
+            }
+
             AuthViewModel.AuthenticationState.INVALID_USER -> {
                 Toast.makeText(context, "No user Associated with this email", Toast.LENGTH_SHORT)
                     .show()

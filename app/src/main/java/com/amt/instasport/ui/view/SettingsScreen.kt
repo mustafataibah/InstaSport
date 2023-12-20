@@ -12,11 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,14 +31,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.amt.instasport.viewmodel.AuthViewModel
 
 @Composable
-fun SettingsScreen (navController: NavController? = null) {
-    Column (
+fun SettingsScreen(navController: NavController, authViewModel: AuthViewModel) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    Column(
         modifier =
         Modifier
             .fillMaxSize()
@@ -45,15 +49,16 @@ fun SettingsScreen (navController: NavController? = null) {
     ) {
 
         // Account Settings
-        Text (text = "Account Settings",
+        Text(
+            text = "Account Settings",
             modifier = Modifier
                 .align(Alignment.Start)
                 .padding(start = 8.dp),
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        Card (modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
-            LazyColumn (
+        Card(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -67,44 +72,45 @@ fun SettingsScreen (navController: NavController? = null) {
                     SettingsItem(
                         title = "Edit Profile",
                         switchable = false,
-                        onClick = {} )
+                        onClick = {})
                     Divider()
                 }
                 item {
                     SettingsItem(
                         title = "Change Password",
                         switchable = false,
-                        onClick = {} )
+                        onClick = {})
                     Divider()
                 }
                 item {
                     SettingsItem(
                         title = "Privacy",
                         switchable = false,
-                        onClick = {} )
+                        onClick = {})
                     Divider()
                 }
                 item {
                     SettingsItem(
                         title = "Notifications",
                         switchable = true,
-                        onClick = {} )
+                        onClick = {})
                 }
             }
         }
 
-        Divider (modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
+        Divider(modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
 
         // Actions Settings
-        Text (text = "Actions",
+        Text(
+            text = "Actions",
             modifier = Modifier
                 .align(Alignment.Start)
                 .padding(start = 8.dp),
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        Card (modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
-            LazyColumn (
+        Card(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -118,14 +124,14 @@ fun SettingsScreen (navController: NavController? = null) {
                     SettingsItem(
                         title = "Add Account",
                         switchable = false,
-                        onClick = {} )
+                        onClick = {})
                     Divider()
                 }
                 item {
                     SettingsItem(
                         title = "Payment Methods",
                         switchable = false,
-                        onClick = {} )
+                        onClick = {})
                     Divider()
                 }
                 item {
@@ -133,15 +139,44 @@ fun SettingsScreen (navController: NavController? = null) {
                         title = "Log Out",
                         switchable = false,
                         Icons.Default.AccountBox,
-                        onClick = {} )
+                        onClick = { showLogoutDialog = true })
                 }
+            }
+            if (showLogoutDialog) {
+                LogoutDialog(onConfirm = {
+                    // TODO : logout functionality
+                    showLogoutDialog = false
+                    authViewModel.logout()
+                    navController.navigate("landing")
+                }, onDismiss = {
+                    showLogoutDialog = false
+                })
             }
         }
     }
 }
 
 @Composable
-private fun SettingsItem (
+private fun LogoutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Log Out", fontWeight = FontWeight.Bold) },
+        text = { Text("Are you sure you want to log out?", fontSize = 18.sp) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Log Out", fontSize = 18.sp)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", fontSize = 18.sp)
+            }
+        }
+    )
+}
+
+@Composable
+private fun SettingsItem(
     title: String,
     switchable: Boolean,
     icon: ImageVector? = Icons.Default.KeyboardArrowRight,
@@ -179,8 +214,8 @@ fun Switch() {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewSettingsScreen() {
-    SettingsScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewSettingsScreen() {
+//    SettingsScreen()
+//}

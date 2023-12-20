@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.amt.instasport.R
 
 data class EventData (
@@ -50,13 +49,23 @@ data class EventData (
 )
 
 @Composable
-fun EventsScreen(navController: NavController? = null) {
+fun EventsScreen() {
     // Test data
     val eventsList = listOf(
         EventData("Pickup Basketball", "Come play basketball with me!", "Jayson Tatum", 0.4),
         EventData("Tennis Match", "Let's play a few friendly sets!", "Serena Williams", 0.7),
-        EventData("Volleyball Game", "Come play volleyball with my friends and I!", "Ricardo Souza", 1.2),
-        EventData("Recreational Soccer", "Join us in a quick soccer game", "Christiano Ronaldo", 1.3),
+        EventData(
+            "Volleyball Game",
+            "Come play volleyball with my friends and I!",
+            "Ricardo Souza",
+            1.2
+        ),
+        EventData(
+            "Recreational Soccer",
+            "Join us in a quick soccer game",
+            "Christiano Ronaldo",
+            1.3
+        ),
     )
 
     Column(
@@ -108,7 +117,7 @@ fun EventItem(event: EventData) {
                         .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        painter = painterResource(id = R.drawable.instasport_logo),
                         contentDescription = "User Avatar",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

@@ -26,53 +26,48 @@ fun TopBar(title: String, navController: NavController) {
     val capitalizedTitle = title.replaceFirstChar { it.titlecase() }
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Text(
-                text = capitalizedTitle,
-                fontSize = 20.sp,
-                style = TextStyle(fontWeight = FontWeight.Bold)
-            )
-        },
-        navigationIcon = {
-            val navIcon = when (currentRoute) {
-                "host" -> Icons.Default.ArrowBack
-                else -> null
-            }
-            IconButton(onClick = { navController?.navigateUp() }) {
-                if (navIcon != null) {
-                    Icon(
-                        imageVector = navIcon,
-                        contentDescription = "Back"
-                    )
-                }
-            }
-        },
-        actions = {
-            val settingsIcon = when (currentRoute) {
-                "profile" -> Icons.Outlined.Settings
-                "settings" -> Icons.Filled.Settings
-                else -> null
-            }
-            IconButton(onClick = { navController.navigate("settings") }) {
-                if (settingsIcon != null) {
-                    Icon(
-                        imageVector = settingsIcon,
-                        contentDescription = "Settings"
-                    )
-                }
-            }
-            val profileIcon = if (currentRoute == "profile") Icons.Filled.Person else Icons.Outlined.Person
-            IconButton(onClick = { navController.navigate("profile") }) {
+    CenterAlignedTopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.primary,
+    ), title = {
+        Text(
+            text = capitalizedTitle,
+            fontSize = 20.sp,
+            style = TextStyle(fontWeight = FontWeight.Bold)
+        )
+    }, navigationIcon = {
+        val navIcon = when (currentRoute) {
+            "host" -> Icons.Default.ArrowBack
+            else -> null
+        }
+        IconButton(onClick = { navController.navigateUp() }) {
+            if (navIcon != null) {
                 Icon(
-                    imageVector = profileIcon,
-                    contentDescription = "Profile"
+                    imageVector = navIcon, contentDescription = "Back"
                 )
             }
         }
-    )
+    }, actions = {
+        val settingsIcon = when (currentRoute) {
+            "profile" -> Icons.Outlined.Settings
+            "settings" -> Icons.Filled.Settings
+            else -> null
+        }
+        IconButton(onClick = { navController.navigate("settings") }) {
+            if (settingsIcon != null) {
+                Icon(
+                    imageVector = settingsIcon, contentDescription = "Settings"
+                )
+            }
+        }
+        if (currentRoute != "location") {
+            val profileIcon =
+                if (currentRoute == "profile") Icons.Filled.Person else Icons.Outlined.Person
+            IconButton(onClick = { navController.navigate("profile") }) {
+                Icon(
+                    imageVector = profileIcon, contentDescription = "Profile"
+                )
+            }
+        }
+    })
 }

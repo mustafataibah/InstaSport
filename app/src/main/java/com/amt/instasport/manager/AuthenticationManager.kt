@@ -129,4 +129,9 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
             AuthenticationState.FAILED
         }
     }
+
+    fun signOut(): AuthenticationState {
+        firebaseAuth.signOut()
+        return AuthenticationState.SIGNED_OUT
+    }
 }

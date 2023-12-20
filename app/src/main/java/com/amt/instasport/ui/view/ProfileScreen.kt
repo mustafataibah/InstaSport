@@ -1,4 +1,4 @@
-package com.amt.instasport
+package com.amt.instasport.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,17 +27,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.amt.instasport.ui.view.HostScreen
+import androidx.compose.ui.unit.sp
+import com.amt.instasport.R
 import com.amt.instasport.viewmodel.UserDataViewModel
 
 @Composable
-fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserDataViewModel) {
+fun ProfileScreen(userDataViewModel: UserDataViewModel) {
     val currentUser by userDataViewModel.currentUserData.observeAsState()
+    val mySports = currentUser?.followedSports?.map { sport ->
+        sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,10 +58,10 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
             Box(
                 modifier = Modifier
                     .size(120.dp)
-                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+                    .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    painter = painterResource(id = R.drawable.instasport_logo),
                     contentDescription = "User Avatar",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -69,7 +73,7 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
 
             currentUser?.let { user ->
                 Text(
-                    text = user.name, fontWeight = FontWeight.Bold
+                    text = user.name, fontWeight = FontWeight.Bold, fontSize = 24.sp
                 )
             }
 
@@ -80,9 +84,14 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
                 Icon(
                     Icons.Filled.Place,
                     contentDescription = "Location",
-                    modifier = Modifier.padding(end = 8.dp)
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 8.dp),
                 )
-                Text(text = "Boston, MA", modifier = Modifier.padding(end = 8.dp))
+                Text(
+                    text = "Boston, MA",
+                    modifier = Modifier.padding(end = 8.dp),
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
 
@@ -98,28 +107,46 @@ fun ProfileScreen(navController: NavController? = null, userDataViewModel: UserD
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "My Sports")
-            SkillBlock(skill = "Badminton", level = "Expert")
-            SkillBlock(skill = "Basketball", level = "Beginner")
-            SkillBlock(skill = "Volleyball", level = "Master")
+            Text(text = "My Sports", fontWeight = FontWeight.Bold, fontSize = 30.sp)
+            mySports?.forEach { sport ->
+                val iconResId = getSportIconResId(sport)
+                SportsBlock(sport = sport, iconResId = iconResId)
+            }
         }
     }
 }
 
+// They say this makes it so code cant be optimized so need to change later to a map function
+@Composable
+fun getSportIconResId(sport: String): Int {
+    val iconName = if (sport == "Squash" || sport == "Volleyball") {
+        "sportsicon"
+    } else {
+        sport.lowercase() + "icon"
+    }
+    val context = LocalContext.current
+    return context.resources.getIdentifier(iconName, "drawable", context.packageName)
+}
+
 
 @Composable
-fun SkillBlock(skill: String, level: String) {
-    Box(
+fun SportsBlock(sport: String, iconResId: Int) {
+    Row(
         modifier = Modifier
             .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center
-        ) {
-            Text(text = skill, fontWeight = FontWeight.Bold)
-            Text(text = level)
-        }
+        Image(
+            painter = painterResource(id = iconResId),
+            contentDescription = "icon",
+            modifier = Modifier.size(60.dp)
+        )
+        Text(
+            text = sport,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Medium
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.amt.instasport.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.launch
 
 
+// GPT
 class AuthViewModelFactory(
     private val authenticationManager: AuthenticationManager,
 ) : ViewModelProvider.Factory {
@@ -86,12 +88,20 @@ class AuthViewModel(
         }
     }
 
+    fun logout() {
+        Log.d("AuthViewModel", "log out called")
+        viewModelScope.launch {
+            val result = authenticationManager.signOut()
+            authenticationState.value = result
+        }
+    }
+
     enum class AuthenticationState {
         AUTHENTICATED_EMAIL, AUTHENTICATED_GOOGLE, AUTHENTICATED_PHONE,
         NEW_USER, USER_ALREADY_EXISTS, NEW_USER_GOOGLE, INVALID_EMAIL,
         WEAK_PASSWORD, INVALID_USER, INVALID_CREDENTIALS,
         EMAIL_ASSOCIATED_WITH_GOOGLE, FAILED, INVALID_PHONE_CODE,
-        INVALID_PHONE_NUMBER, PHONE_NUMBER_ALREADY_EXISTS, NEW_USER_PHONE
+        INVALID_PHONE_NUMBER, PHONE_NUMBER_ALREADY_EXISTS, NEW_USER_PHONE, SIGNED_OUT
     }
 }
 

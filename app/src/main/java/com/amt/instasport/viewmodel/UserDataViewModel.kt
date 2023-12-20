@@ -8,6 +8,7 @@ import com.amt.instasport.model.User
 import com.amt.instasport.repository.UserRepository
 import kotlinx.coroutines.launch
 
+// GPT
 class UserDataViewModelFactory(private val userRepository: UserRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

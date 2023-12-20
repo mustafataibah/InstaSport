@@ -19,13 +19,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun BottomNavBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    NavigationBar () {
+    NavigationBar {
         NavigationBarItem(
             icon = {
-                Icon (imageVector = if (currentRoute == "dashboard") Icons.Filled.Home else Icons.Outlined.Home,
-                    contentDescription = "Dashboard")
+                Icon(
+                    imageVector = if (currentRoute == "dashboard") Icons.Filled.Home else Icons.Outlined.Home,
+                    contentDescription = "Dashboard"
+                )
             },
-            label = { Text ("Dashboard") },
+            label = { Text("Dashboard") },
             selected = currentRoute == "dashboard",
             onClick = {
                 if (currentRoute != "dashboard") {
