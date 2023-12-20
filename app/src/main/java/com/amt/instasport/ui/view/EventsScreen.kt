@@ -1,6 +1,7 @@
 package com.amt.instasport.ui.view
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,9 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,17 +46,17 @@ data class EventData (
     val title: String,
     val description: String,
     val author: String,
-    val distance: String,
+    val distance: Double,
 )
 
 @Composable
 fun EventsScreen(navController: NavController? = null) {
     // Test data
     val eventsList = listOf(
-        EventData("Pickup Basketball", "Come play basketball with me!", "Jayson Tatum", "0.4"),
-        EventData("Tennis Match", "Let's play a few friendly sets!", "Serena Williams", "0.7"),
-        EventData("Volleyball Game", "Come play volleyball with my friends and I!", "Ricardo Souza", "1.2"),
-        EventData("Recreational Soccer", "Join us in a quick soccer game", "Christiano Ronaldo", "1.3"),
+        EventData("Pickup Basketball", "Come play basketball with me!", "Jayson Tatum", 0.4),
+        EventData("Tennis Match", "Let's play a few friendly sets!", "Serena Williams", 0.7),
+        EventData("Volleyball Game", "Come play volleyball with my friends and I!", "Ricardo Souza", 1.2),
+        EventData("Recreational Soccer", "Join us in a quick soccer game", "Christiano Ronaldo", 1.3),
     )
 
     Column(
@@ -80,13 +82,12 @@ fun EventItem(event: EventData) {
     val (title, description, author, distance) = event
     var isExpanded by remember { mutableStateOf(false) }
 
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
+    Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            containerColor =
+                if (isExpanded) MaterialTheme.colorScheme.secondaryContainer else Color.White
         ),
+        border = if (isExpanded) null else BorderStroke(1.dp, Color.LightGray),
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
