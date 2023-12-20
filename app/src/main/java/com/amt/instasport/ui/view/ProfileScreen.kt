@@ -16,13 +16,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +44,9 @@ import com.amt.instasport.viewmodel.UserDataViewModel
 @Composable
 fun ProfileScreen(userDataViewModel: UserDataViewModel) {
     val currentUser by userDataViewModel.currentUserData.observeAsState()
+    val (isEditing, setIsEditing) = remember { mutableStateOf(false) }
+    val (editedName, setEditedName) = remember { mutableStateOf("") }
+
     val mySports = currentUser?.followedSports?.map { sport ->
         sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
@@ -71,16 +79,47 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
             currentUser?.let { user ->
-                Text(
-                    text = user.name,
-                    fontFamily = InstaSportFont,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 24.sp
-                )
-            }
+                if (isEditing) {
+                    OutlinedTextField(
+                        value = editedName,
+                        onValueChange = { setEditedName(it) },
+                        label = { Text("Edit Name") },
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Row (
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        OutlinedButton(onClick = {
+                            setIsEditing(false)
+                        }) {
+                            Text("Cancel")
+                        }
+                        Button(onClick = {
+                            setIsEditing(false)
+                            user.name = editedName
+                            userDataViewModel.uploadUserData(user)
+                        }) {
+                            Text("Save")
+                        }
+                    }
 
+                } else {
+                    Text(
+                        text = user.name,
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 24.sp,
+                    )
+                    Button(onClick = { setIsEditing(true)
+                        setEditedName(user.name) },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text("Edit Name")
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -110,7 +149,7 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = "My Sports",
@@ -133,7 +172,7 @@ fun SportsBlock(sport: String) {
         modifier = Modifier
             .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -144,5 +183,7 @@ fun SportsBlock(sport: String) {
         Text(
             text = sport, fontSize = 22.sp, fontWeight = FontWeight.Medium
         )
+        Spacer(modifier = Modifier.weight(1f))
+
     }
 }

@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.amt.instasport.R
 import com.amt.instasport.ui.component.ButtonsSection
 import com.amt.instasport.ui.component.PageIndicator
+import com.amt.instasport.ui.theme.InstaSportFont
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -72,14 +73,16 @@ fun OnboardingScreen(navController: NavHostController) {
                     lineHeight = 40.sp,
                     textAlign = TextAlign.Center,
                     fontSize = 44.sp,
-                    fontWeight = FontWeight.Bold
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = descriptions[currentPage],
                     Modifier.padding(top = 45.dp),
                     textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-
+                    fontSize = 20.sp,
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Light,
                 )
             }
         }
