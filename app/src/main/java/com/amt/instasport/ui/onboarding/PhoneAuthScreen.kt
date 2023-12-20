@@ -114,7 +114,8 @@ fun PhoneAuthScreen(
                 onValueChange = { phoneNumber = it },
                 label = { Text("Phone Number") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -137,7 +138,8 @@ fun PhoneAuthScreen(
                 onValueChange = { verificationCode = it },
                 label = { Text("Verification Code") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))

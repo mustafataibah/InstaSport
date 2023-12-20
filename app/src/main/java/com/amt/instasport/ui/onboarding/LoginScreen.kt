@@ -165,7 +165,8 @@ fun LoginScreen(
                 onValueChange = { email = it },
                 label = { Text("Email Address") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true
             )
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
@@ -184,6 +185,7 @@ fun LoginScreen(
                         )
                     }
                 },
+                singleLine = true
             )
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End

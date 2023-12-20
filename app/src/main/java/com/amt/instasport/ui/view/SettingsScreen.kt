@@ -1,5 +1,6 @@
 package com.amt.instasport.ui.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -64,19 +64,31 @@ fun SettingsScreen (navController: NavController? = null) {
                     )
             ) {
                 item {
-                    SettingsItem(title = "Edit Profile", switchable = false)
+                    SettingsItem(
+                        title = "Edit Profile",
+                        switchable = false,
+                        onClick = {} )
                     Divider()
                 }
                 item {
-                    SettingsItem(title = "Change Password", switchable = false)
+                    SettingsItem(
+                        title = "Change Password",
+                        switchable = false,
+                        onClick = {} )
                     Divider()
                 }
                 item {
-                    SettingsItem(title = "Privacy", switchable = false)
+                    SettingsItem(
+                        title = "Privacy",
+                        switchable = false,
+                        onClick = {} )
                     Divider()
                 }
                 item {
-                    SettingsItem(title = "Notifications", switchable = true)
+                    SettingsItem(
+                        title = "Notifications",
+                        switchable = true,
+                        onClick = {} )
                 }
             }
         }
@@ -103,15 +115,25 @@ fun SettingsScreen (navController: NavController? = null) {
                     )
             ) {
                 item {
-                    SettingsItem(title = "Add Account", switchable = false)
+                    SettingsItem(
+                        title = "Add Account",
+                        switchable = false,
+                        onClick = {} )
                     Divider()
                 }
                 item {
-                    SettingsItem(title = "Payment Methods", switchable = false)
+                    SettingsItem(
+                        title = "Payment Methods",
+                        switchable = false,
+                        onClick = {} )
                     Divider()
                 }
                 item {
-                    SettingsItem(title = "Log Out", switchable = false, Icons.Default.AccountBox)
+                    SettingsItem(
+                        title = "Log Out",
+                        switchable = false,
+                        Icons.Default.AccountBox,
+                        onClick = {} )
                 }
             }
         }
@@ -122,19 +144,18 @@ fun SettingsScreen (navController: NavController? = null) {
 private fun SettingsItem (
     title: String,
     switchable: Boolean,
-    icon: ImageVector? = Icons.Default.KeyboardArrowRight
+    icon: ImageVector? = Icons.Default.KeyboardArrowRight,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .padding(top = 10.dp, bottom = 12.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ClickableText(
-            text = AnnotatedString(title),
-            onClick = { /*TODO*/ }
-        )
+        Text(text = AnnotatedString(title))
         if (switchable) {
             Switch()
         } else {

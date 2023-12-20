@@ -156,7 +156,8 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
                 onValueChange = { email = it },
                 label = { Text("Email Address") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true
             )
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
@@ -175,6 +176,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
                         )
                     }
                 },
+                singleLine = true
             )
             Spacer(Modifier.height(65.dp))
             Button(
