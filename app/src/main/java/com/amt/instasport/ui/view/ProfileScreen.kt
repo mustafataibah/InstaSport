@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
+import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.util.sportIconMap
 import com.amt.instasport.viewmodel.UserDataViewModel
 
@@ -73,7 +74,10 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
 
             currentUser?.let { user ->
                 Text(
-                    text = user.name, fontWeight = FontWeight.Bold, fontSize = 24.sp
+                    text = user.name,
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 24.sp
                 )
             }
 
@@ -90,7 +94,8 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
                 Text(
                     text = "Boston, MA",
                     modifier = Modifier.padding(end = 8.dp),
-                    fontWeight = FontWeight.SemiBold
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
@@ -107,7 +112,12 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "My Sports", fontWeight = FontWeight.Bold, fontSize = 30.sp)
+            Text(
+                text = "My Sports",
+                fontFamily = InstaSportFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+            )
             mySports?.forEach { sport ->
                 SportsBlock(sport = sport)
             }

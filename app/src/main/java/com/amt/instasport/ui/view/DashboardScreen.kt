@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
 import com.amt.instasport.ui.component.MapComposable
+import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.util.sportIconMap
 import com.amt.instasport.viewmodel.UserDataViewModel
 
@@ -64,7 +65,8 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
         Text(
             text = "Hello ${currentUser?.name}",
             fontSize = 20.sp,
-            style = TextStyle(fontWeight = FontWeight.SemiBold),
+            fontFamily = InstaSportFont,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         Divider(modifier = Modifier.layout { measurable, constraints ->
@@ -80,7 +82,8 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
         Text(
             text = "My Sports",
             fontSize = 20.sp,
-            style = TextStyle(fontWeight = FontWeight.SemiBold),
+            fontFamily = InstaSportFont,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
@@ -121,7 +124,8 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
         Text(
             text = "Recommended Events",
             fontSize = 20.sp,
-            style = TextStyle(fontWeight = FontWeight.SemiBold),
+            fontFamily = InstaSportFont,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
@@ -151,7 +155,8 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
         Text(
             text = "Events Near Me",
             fontSize = 20.sp,
-            style = TextStyle(fontWeight = FontWeight.SemiBold),
+            fontFamily = InstaSportFont,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
