@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun GoogleMapComposable(navController: NavController) {
+fun GoogleMapComposable(navController: NavController? = null) {
     val mapView = rememberMapViewWithLifecycle()
     var map: GoogleMap? by remember { mutableStateOf(null) }
     var showOverlay by remember { mutableStateOf(true) }
@@ -65,7 +65,7 @@ fun GoogleMapComposable(navController: NavController) {
             )
         } else {
             Button(
-                onClick = { navController.navigate("dashboard") },
+                onClick = { navController?.navigate("dashboard") },
                 Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 30.dp)

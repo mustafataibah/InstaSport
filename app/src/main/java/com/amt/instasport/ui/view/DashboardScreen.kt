@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
@@ -39,24 +37,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
+import com.amt.instasport.ui.component.MapComposable
+import com.amt.instasport.util.sportIconMap
 import com.amt.instasport.viewmodel.UserDataViewModel
-
-data class SportItemData(
-    val sport: String,
-    val icon: Int
-)
 
 @Composable
 fun DashboardScreen(userDataViewModel: UserDataViewModel) {
     val currentUser by userDataViewModel.currentUserData.observeAsState()
-
-    /* TODO: add vector graphics for sports */
-    val sportsList = listOf(
-        SportItemData("Tennis", R.drawable.tennis),
-        SportItemData("Volleyball", R.drawable.volleyball),
-        SportItemData("Badminton", R.drawable.badminton),
-        SportItemData("Basketball", R.drawable.basketball),
-    ).sortedBy { it.sport.first() }
+    val mySports = currentUser?.followedSports?.map { sport ->
+        sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    }
 
     val eventsList = listOf(
         EventData("Casual Badminton Match", "", "Barney D.", 0.4),
@@ -71,26 +61,26 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-
-        Text (
+        Text(
             text = "Hello ${currentUser?.name}",
-            //text = "Hello Andrew",
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         Divider(modifier = Modifier.layout { measurable, constraints ->
-            val placeable = measurable.measure(constraints.copy(
-                maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
-            ))
+            val placeable = measurable.measure(
+                constraints.copy(
+                    maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
+                )
+            )
             layout(placeable.width, placeable.height) {
                 placeable.place(0, 0)
             }
         })
-        Text (
+        Text(
             text = "My Sports",
             fontSize = 20.sp,
-            style = TextStyle(fontWeight = FontWeight.Normal),
+            style = TextStyle(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
@@ -104,27 +94,31 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
                         )
                     )
                     layout(placeable.width, placeable.height) {
-                        placeable.place(0, 0)
+                        placeable.place(50, 0)
                     }
                 },
             contentPadding = PaddingValues(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            items(sportsList) { sportItem ->
-                SportsItem(sportItem)
+            items(mySports ?: listOf()) { sport ->
+                val displaySport =
+                    sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                SportsItem(displaySport)
             }
         }
 
         Divider(modifier = Modifier.layout { measurable, constraints ->
-            val placeable = measurable.measure(constraints.copy(
-                maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
-            ))
+            val placeable = measurable.measure(
+                constraints.copy(
+                    maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
+                )
+            )
             layout(placeable.width, placeable.height) {
                 placeable.place(0, 0)
             }
         })
 
-        Text (
+        Text(
             text = "Recommended Events",
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.SemiBold),
@@ -154,14 +148,14 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
 
         Spacer(modifier = Modifier.padding(2.dp))
 
-        Text (
+        Text(
             text = "Events Near Me",
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
-        ElevatedCard (
+        ElevatedCard(
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
@@ -171,13 +165,16 @@ fun DashboardScreen(userDataViewModel: UserDataViewModel) {
             ),
         ) {
             /* TODO: maybe can implement Google Maps API here */
+            MapComposable()
         }
     }
 }
 
 @Composable
-fun SportsItem(sportItem: SportItemData) {
-    Column (
+fun SportsItem(sport: String) {
+    val iconResId = sportIconMap[sport.lowercase()] ?: R.drawable.sportsicon
+
+    Column(
         modifier = Modifier.padding(0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -190,15 +187,15 @@ fun SportsItem(sportItem: SportItemData) {
             ),
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    painter = painterResource(id = sportItem.icon),
-                    contentDescription = sportItem.sport,
-                    modifier = Modifier.scale(0.25f)
+                Image(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = "icon",
+                    modifier = Modifier.size(85.dp)
                 )
             }
         }
-        Text (text = sportItem.sport,
-            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+        Text(
+            text = sport, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
     }
 }
@@ -219,9 +216,8 @@ fun DashboardEventItem(event: EventData) {
                 .padding(16.dp)
                 .animateContentSize(),
         ) {
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Row(
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier

@@ -14,8 +14,10 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,7 +39,7 @@ import androidx.navigation.NavController
 import com.amt.instasport.viewmodel.AuthViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun SettingsScreen(navController: NavController? = null, authViewModel: AuthViewModel? = null) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -57,7 +59,12 @@ fun SettingsScreen(navController: NavController, authViewModel: AuthViewModel) {
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        Card(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+        Card(
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,7 +116,12 @@ fun SettingsScreen(navController: NavController, authViewModel: AuthViewModel) {
             fontSize = 20.sp,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        Card(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
+        Card(
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,10 +156,9 @@ fun SettingsScreen(navController: NavController, authViewModel: AuthViewModel) {
             }
             if (showLogoutDialog) {
                 LogoutDialog(onConfirm = {
-                    // TODO : logout functionality
                     showLogoutDialog = false
-                    authViewModel.logout()
-                    navController.navigate("landing")
+                    authViewModel?.logout()
+                    navController?.navigate("landing")
                 }, onDismiss = {
                     showLogoutDialog = false
                 })

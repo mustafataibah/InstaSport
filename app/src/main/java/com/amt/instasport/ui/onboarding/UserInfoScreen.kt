@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -60,8 +61,8 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun UserInfoScreen(
     navController: NavHostController? = null,
-    authViewModel: AuthViewModel,
-    userDataViewModel: UserDataViewModel
+    authViewModel: AuthViewModel? = null,
+    userDataViewModel: UserDataViewModel? = null
 ) {
     var ageText by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -71,53 +72,64 @@ fun UserInfoScreen(
     val focusManager = LocalFocusManager.current
     val pagerState = rememberPagerState(pageCount = 5)
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = { focusManager.clearFocus() })
-            }, horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        HorizontalPager(
-            state = pagerState, Modifier.weight(1f)
-        ) { page ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(26.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                when (page) {
-                    0 -> AgeInput(ageText, onAgeChange = { ageText = it })
-                    1 -> NameInput(name, onNameChange = { name = it })
-                    2 -> GenderInput(gender, onGenderChange = { gender = it })
-                    3 -> SportsInterestInput(selectedSports = selectedSports)
-                    4 -> Spacer(modifier = Modifier.fillMaxSize())
-                }
-            }
-        }
-
-        PageIndicator(
-            pageCount = 5, currentPage = pagerState.currentPage, modifier = Modifier.padding(60.dp)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.backgroundimage),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
 
-        if (pagerState.currentPage == 4) {
-            LaunchedEffect(Unit) {
-                val uid = authViewModel.getCurrentUserId()
-                val age = ageText.toIntOrNull() ?: 0
+        Column(
+            Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            HorizontalPager(
+                state = pagerState, Modifier.weight(1f)
+            ) { page ->
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(26.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    when (page) {
+                        0 -> AgeInput(ageText, onAgeChange = { ageText = it })
+                        1 -> NameInput(name, onNameChange = { name = it })
+                        2 -> GenderInput(gender, onGenderChange = { gender = it })
+                        3 -> SportsInterestInput(selectedSports = selectedSports)
+                        4 -> Spacer(modifier = Modifier.fillMaxSize())
+                    }
+                }
+            }
 
-                if (uid != null) {
-                    val user = User(
-                        uid = uid,
-                        name = name,
-                        age = age,
-                        gender = gender,
-                        followedSports = selectedSports.toList()
-                    )
-                    // TODO: User needs to login for the data to be fetched, make it such that signing up also makes the data accessible or something
-                    userDataViewModel.uploadUserData(user)
-                    navController?.navigate("location")
+            PageIndicator(
+                pageCount = 5,
+                currentPage = pagerState.currentPage,
+                modifier = Modifier.padding(60.dp)
+            )
+
+            if (pagerState.currentPage == 4) {
+                LaunchedEffect(Unit) {
+                    val uid = authViewModel?.getCurrentUserId()
+                    val age = ageText.toIntOrNull() ?: 0
+
+                    if (uid != null) {
+                        val user = User(
+                            uid = uid,
+                            name = name,
+                            age = age,
+                            gender = gender,
+                            followedSports = selectedSports.toList()
+                        )
+                        // TODO: User needs to login for the data to be fetched, make it such that signing up also makes the data accessible or something
+                        userDataViewModel?.uploadUserData(user)
+                        navController?.navigate("location")
+                    }
                 }
             }
         }
@@ -250,6 +262,12 @@ fun SportImage(sportName: String, isSelected: Boolean, onClick: () -> Unit) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewUserInfoScreen() {
+    UserInfoScreen()
 }
 
 

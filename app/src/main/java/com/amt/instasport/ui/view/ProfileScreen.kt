@@ -27,12 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
+import com.amt.instasport.util.sportIconMap
 import com.amt.instasport.viewmodel.UserDataViewModel
 
 @Composable
@@ -109,28 +109,16 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
         ) {
             Text(text = "My Sports", fontWeight = FontWeight.Bold, fontSize = 30.sp)
             mySports?.forEach { sport ->
-                val iconResId = getSportIconResId(sport)
-                SportsBlock(sport = sport, iconResId = iconResId)
+                SportsBlock(sport = sport)
             }
         }
     }
 }
 
-// They say this makes it so code cant be optimized so need to change later to a map function
 @Composable
-fun getSportIconResId(sport: String): Int {
-    val iconName = if (sport == "Squash" || sport == "Volleyball") {
-        "sportsicon"
-    } else {
-        sport.lowercase() + "icon"
-    }
-    val context = LocalContext.current
-    return context.resources.getIdentifier(iconName, "drawable", context.packageName)
-}
+fun SportsBlock(sport: String) {
+    val iconResId = sportIconMap[sport.lowercase()] ?: R.drawable.sportsicon
 
-
-@Composable
-fun SportsBlock(sport: String, iconResId: Int) {
     Row(
         modifier = Modifier
             .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
@@ -144,9 +132,7 @@ fun SportsBlock(sport: String, iconResId: Int) {
             modifier = Modifier.size(60.dp)
         )
         Text(
-            text = sport,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Medium
+            text = sport, fontSize = 22.sp, fontWeight = FontWeight.Medium
         )
     }
 }
