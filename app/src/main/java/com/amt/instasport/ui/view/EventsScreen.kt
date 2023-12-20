@@ -1,14 +1,21 @@
 package com.amt.instasport.ui.view
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -17,38 +24,62 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.amt.instasport.R
+
+data class EventData (
+    val title: String,
+    val description: String,
+    val author: String,
+    val distance: String,
+)
 
 @Composable
 fun EventsScreen(navController: NavController? = null) {
-    val eventsList = listOf("Pickup Basketball", "Local Tennis Match", "Volleyball Game", "Soccer Game")
+    // Test data
+    val eventsList = listOf(
+        EventData("Pickup Basketball", "Come play basketball with me!", "Jayson Tatum", "0.4"),
+        EventData("Tennis Match", "Let's play a few friendly sets!", "Serena Williams", "0.7"),
+        EventData("Volleyball Game", "Come play volleyball with my friends and I!", "Ricardo Souza", "1.2"),
+        EventData("Recreational Soccer", "Join us in a quick soccer game", "Christiano Ronaldo", "1.3"),
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(eventsList) { event ->
                 EventItem(event)
-                Spacer(modifier = Modifier.padding(8.dp))
             }
         }
     }
 }
 
 @Composable
-fun EventItem(eventName: String) {
+fun EventItem(event: EventData) {
+    val (title, description, author, distance) = event
+    var isExpanded by remember { mutableStateOf(false) }
+
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
@@ -56,70 +87,92 @@ fun EventItem(eventName: String) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
-        modifier = Modifier.padding(
-            start = 4.dp,
-            end = 4.dp,
-            top = 6.dp,
-            bottom = 2.dp,
-        )
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded }
     ) {
-        Text(
-            text = eventName,
-            style = TextStyle(fontWeight = FontWeight.Bold),
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 12.dp,
-                )
-        )
-        Divider()
-        Text(
-            text = "Description",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 12.dp,
-                )
-        )
-        Row (modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.padding(
-                    start = 10.dp,
-                    end = 0.dp,
-                    top = 8.dp,
-                    bottom = 8.dp,
-                )
+                .padding(16.dp)
+                .animateContentSize(),
+        ) {
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text (
-                    text = "Info"
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        contentDescription = "User Avatar",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Spacer(modifier = Modifier.padding(4.dp))
+                Text(
+                    text = author,
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "$distance mi away",
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.padding(
-                    start = 10.dp,
-                    end = 0.dp,
-                    top = 8.dp,
-                    bottom = 8.dp,
+
+            Divider(modifier = Modifier.padding(vertical = 12.dp))
+
+            Text(
+                text = title,
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.padding(2.dp))
+
+            if (isExpanded) {
+                Text(
+                    text = description,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            ) {
-                Text (
-                    text = "Join"
-                )
+                Spacer(modifier = Modifier.padding(6.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier.padding(
+                        )
+                    ) {
+                        Text(
+                            text = "Info"
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier.padding(
+                        )
+                    ) {
+                        Text(
+                            text = "Join"
+                        )
+                    }
+                }
             }
         }
-        Spacer(modifier = Modifier.padding(2.dp))
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
