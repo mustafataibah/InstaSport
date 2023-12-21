@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.amt.instasport.ui.component.BottomNavBar
 import com.amt.instasport.ui.component.TopBar
 import com.amt.instasport.ui.onboarding.LandingScreen
+import com.amt.instasport.ui.onboarding.LocationScreen
 import com.amt.instasport.ui.onboarding.LoginScreen
 import com.amt.instasport.ui.onboarding.OnboardingScreen
 import com.amt.instasport.ui.onboarding.PhoneAuthScreen
@@ -19,7 +20,6 @@ import com.amt.instasport.ui.onboarding.SignUpScreen
 import com.amt.instasport.ui.onboarding.UserInfoScreen
 import com.amt.instasport.ui.view.DashboardScreen
 import com.amt.instasport.ui.view.EventsScreen
-import com.amt.instasport.ui.view.GoogleMapComposable
 import com.amt.instasport.ui.view.HostScreen
 import com.amt.instasport.ui.view.ProfileScreen
 import com.amt.instasport.ui.view.SettingsScreen
@@ -53,7 +53,7 @@ fun AppNavigation(
     }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "onboarding",
+            startDestination = "location",
             modifier = Modifier.padding(innerPadding)
         ) {
             // Onboarding Screens
@@ -70,6 +70,7 @@ fun AppNavigation(
                     navController, authViewModel, userDataViewModel
                 )
             }
+            composable("location") { LocationScreen(navController) }
 
             // Main App Screens
             composable("dashboard") { DashboardScreen(navController,userDataViewModel,) }
@@ -77,7 +78,7 @@ fun AppNavigation(
             composable("events") { EventsScreen() }
             composable("profile") { ProfileScreen(userDataViewModel) }
             composable("settings") { SettingsScreen(navController, authViewModel) }
-            composable("location") { GoogleMapComposable(navController) }
+
 
         }
     }

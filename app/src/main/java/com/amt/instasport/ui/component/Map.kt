@@ -1,29 +1,27 @@
 package com.amt.instasport.ui.component
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.viewinterop.AndroidView
-import com.amt.instasport.ui.view.rememberMapViewWithLifecycle
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
+import androidx.compose.ui.Modifier
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun MapComposable() {
-    val mapView = rememberMapViewWithLifecycle()
-    var map: GoogleMap? by remember { mutableStateOf(null) }
-    val bostonCoordinates = LatLng(42.3601, -71.0589)
-
-    Box {
-        AndroidView({ mapView }) { mapView ->
-            mapView.getMapAsync { googleMap ->
-                map = googleMap
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bostonCoordinates, 15f))
-            }
-        }
+fun MapComposable(location: LatLng) {
+//    val boston = LatLng(42.3601, -71.0589)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(location, 15f)
+    }
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState,
+    ) {
+        Marker(
+            state = MarkerState(position = location)
+        )
     }
 }
