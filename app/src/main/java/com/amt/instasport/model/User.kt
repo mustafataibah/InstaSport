@@ -5,6 +5,6 @@ data class User(
     var name: String = "",
     val age: Int = 0,
     val gender: String = "",
-    val followedSports: List<String> = listOf()
+    var followedSports: List<String> = listOf()
 )
 
