@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.amt.instasport.ui.component.BottomNavBar
 import com.amt.instasport.ui.component.TopBar
 import com.amt.instasport.ui.onboarding.LandingScreen
+import com.amt.instasport.ui.onboarding.LocationScreen
 import com.amt.instasport.ui.onboarding.LoginScreen
 import com.amt.instasport.ui.onboarding.OnboardingScreen
 import com.amt.instasport.ui.onboarding.PhoneAuthScreen
@@ -18,18 +19,18 @@ import com.amt.instasport.ui.onboarding.SignUpScreen
 import com.amt.instasport.ui.onboarding.UserInfoScreen
 import com.amt.instasport.ui.view.DashboardScreen
 import com.amt.instasport.ui.view.EventsScreen
-import com.amt.instasport.ui.view.GoogleMapComposable
 import com.amt.instasport.ui.view.HostScreen
 import com.amt.instasport.ui.view.ProfileScreen
 import com.amt.instasport.ui.view.SettingsScreen
 import com.amt.instasport.viewmodel.AuthViewModel
+import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 
 @Composable
 fun AppNavigation(
     authViewModel: AuthViewModel,
     userDataViewModel: UserDataViewModel,
-//    eventsViewModel: EventsViewModel
+    eventsViewModel: EventsViewModel
 ) {
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
@@ -52,7 +53,7 @@ fun AppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "onboarding",
+            startDestination = "location",
             modifier = Modifier.padding(innerPadding)
         ) {
             // Onboarding Screens
@@ -69,10 +70,11 @@ fun AppNavigation(
                     navController, authViewModel, userDataViewModel
                 )
             }
+            composable("location") { LocationScreen(navController) }
 
             // Main App Screens
-            composable("dashboard") { DashboardScreen(navController, userDataViewModel) }
-            composable("host") { HostScreen(navController) }
+            composable("dashboard") { DashboardScreen(navController,userDataViewModel,) }
+            composable("host") { HostScreen(navController,authViewModel,eventsViewModel,userDataViewModel) }
             composable("events") { EventsScreen(userDataViewModel) }
             composable("events/{eventId}") { backStackEntry ->
                 val eventId = backStackEntry.arguments?.getString("eventId")
@@ -80,9 +82,8 @@ fun AppNavigation(
             }
             composable("profile") { ProfileScreen(userDataViewModel) }
             composable("settings") { SettingsScreen(navController, authViewModel) }
-            composable("location") { GoogleMapComposable(navController) }
+
 
         }
     }
 }
-

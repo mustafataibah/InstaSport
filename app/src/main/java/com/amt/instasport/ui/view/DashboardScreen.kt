@@ -48,6 +48,7 @@ import com.amt.instasport.ui.component.MapComposable
 import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.util.sportIconMap
 import com.amt.instasport.viewmodel.UserDataViewModel
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun DashboardScreen(navController: NavController, userDataViewModel: UserDataViewModel) {
@@ -235,7 +236,7 @@ fun EventsSection (navController: NavController, eventsList: List<Event>) {
                 defaultElevation = 4.dp
             ),
         ) {
-            MapComposable()
+            MapComposable(LatLng(42.3650, -71.0675))
         }
     }
 }
