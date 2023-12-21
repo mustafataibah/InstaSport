@@ -1,5 +1,6 @@
 package com.amt.instasport.ui.view
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,25 +44,42 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.amt.instasport.R
 import com.amt.instasport.model.Event
-import com.amt.instasport.model.SportsInterest
 import com.amt.instasport.ui.component.MapComposable
 import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.util.sportIconMap
+import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 import com.google.android.gms.maps.model.LatLng
 
 @Composable
-fun DashboardScreen(navController: NavController, userDataViewModel: UserDataViewModel) {
+fun DashboardScreen(
+    navController: NavController,
+    userDataViewModel: UserDataViewModel,
+    eventsViewModel: EventsViewModel
+) {
     val currentUser by userDataViewModel.currentUserData.observeAsState()
+    val allEvents by eventsViewModel.allEvents.observeAsState(listOf())
     val mySports = currentUser?.followedSports?.map { sport ->
         sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }?.sortedBy { it.first() }
+    Log.d("Dashboard", "$mySports, and allEvents : $allEvents")
 
-    val eventsList = listOf(
-        Event("test1", "serena.w", "Serena Williams", "Tennis Match", SportsInterest("tennis", "tennis"), "", 1.0, "12/21/23 6:30 PM", 4,"Let's play a few friendly sets!", "intermediate"),
-        Event("test2", "ricardo.s", "Ricardo Souza", "Volleyball Game", SportsInterest("volleyball", "volleyball"), "", 1.2, "12/22/23 5:00 PM", 6, "Come play volleyball with my friends and I!", "beginner"),
-        Event("test4", "barney.d", "Barney D.", "Casual Badminton Match", SportsInterest("badminton", "badminton"), "", 0.1, "12/24/23 6:00 PM", 2, "Looking for a few people to play a casual game of badminton!", "beginner"),
-    )
+
+    val recommendedEvents = if (mySports.isNullOrEmpty()) {
+        listOf<Event>()
+    } else {
+        allEvents.filter { event ->
+            mySports.any { interest ->
+                event.sportType.sportName.equals(interest, ignoreCase = true)
+            }
+        }
+    }
+
+//    val eventsList = listOf(
+//        Event("test1", "serena.w", "Serena Williams", "Tennis Match", SportsInterest("tennis", "tennis"), "", 1.0, "12/21/23 6:30 PM", 4,"Let's play a few friendly sets!", "intermediate"),
+//        Event("test2", "ricardo.s", "Ricardo Souza", "Volleyball Game", SportsInterest("volleyball", "volleyball"), "", 1.2, "12/22/23 5:00 PM", 6, "Come play volleyball with my friends and I!", "beginner"),
+//        Event("test4", "barney.d", "Barney D.", "Casual Badminton Match", SportsInterest("badminton", "badminton"), "", 0.1, "12/24/23 6:00 PM", 2, "Looking for a few people to play a casual game of badminton!", "beginner"),
+//    )
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +88,7 @@ fun DashboardScreen(navController: NavController, userDataViewModel: UserDataVie
     ) {
         item { GreetingSection(currentUser?.name) }
         item { MySportsSection(navController, mySports) }
-        item { EventsSection(navController, eventsList) }
+        item { EventsSection(navController, recommendedEvents) }
     }
 }
 

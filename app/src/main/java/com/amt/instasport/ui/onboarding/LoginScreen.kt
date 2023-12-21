@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.amt.instasport.R
 import com.amt.instasport.viewmodel.AuthViewModel
+import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -61,7 +62,8 @@ import com.google.firebase.auth.FirebaseAuthException
 fun LoginScreen(
     navController: NavController? = null,
     authViewModel: AuthViewModel,
-    userDataViewModel: UserDataViewModel
+    userDataViewModel: UserDataViewModel,
+    eventsViewModel: EventsViewModel
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -85,6 +87,7 @@ fun LoginScreen(
                 authViewModel.getCurrentUserId()?.let { userId ->
                     userDataViewModel.fetchUserData(userId)
                 }
+                eventsViewModel.fetchAllEvents()
                 navController?.navigate("dashboard")
             }
 
@@ -110,6 +113,7 @@ fun LoginScreen(
                 authViewModel.getCurrentUserId()?.let { userId ->
                     userDataViewModel.fetchUserData(userId)
                 }
+                eventsViewModel.fetchAllEvents()
                 navController?.navigate("dashboard")
             }
 

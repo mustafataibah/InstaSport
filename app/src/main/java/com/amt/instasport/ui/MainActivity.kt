@@ -55,13 +55,6 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        // TODO: fetchUserData and fetchEventsData methods to get all the users data if logged in
-//        if (firebaseAuth.currentUser != null) {
-//            // User is already logged in
-//            userDataViewModel.fetchUserData(firebaseAuth.currentUser!!.uid)
-////            eventsViewModel.fetchEventsData()
-//        }
-
         setContent {
             InstaSportTheme {
                 // Then Pass ViewModels to AppNavigation (so I believe that the lifecycle of the view models are based on the Main activities lifecycle)

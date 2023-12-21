@@ -11,4 +11,8 @@ class EventRepository (private val eventDatabaseManager: EventsDatabaseManager){
     suspend fun uploadEventData(event: Event) {
         eventDatabaseManager.uploadEventsDataToDatabase(event)
     }
+
+    suspend fun getAllEvents(): List<Event> {
+        return eventDatabaseManager.getAllEvents()
+    }
 }

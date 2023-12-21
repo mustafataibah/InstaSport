@@ -53,13 +53,20 @@ fun AppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "location",
+            startDestination = "onboarding",
             modifier = Modifier.padding(innerPadding)
         ) {
             // Onboarding Screens
             composable("onboarding") { OnboardingScreen(navController) }
             composable("landing") { LandingScreen(navController) }
-            composable("login") { LoginScreen(navController, authViewModel, userDataViewModel) }
+            composable("login") {
+                LoginScreen(
+                    navController,
+                    authViewModel,
+                    userDataViewModel,
+                    eventsViewModel
+                )
+            }
             composable("signUp") { SignUpScreen(navController, authViewModel) }
             composable("phoneSignUp/{signUpOrLogin}") { backStackEntry ->
                 val signUpOrLogin = backStackEntry.arguments?.getString("signUpOrLogin") ?: "SignUp"
@@ -73,12 +80,25 @@ fun AppNavigation(
             composable("location") { LocationScreen(navController) }
 
             // Main App Screens
-            composable("dashboard") { DashboardScreen(navController,userDataViewModel,) }
-            composable("host") { HostScreen(navController,authViewModel,eventsViewModel,userDataViewModel) }
-            composable("events") { EventsScreen(userDataViewModel) }
+            composable("dashboard") {
+                DashboardScreen(
+                    navController,
+                    userDataViewModel,
+                    eventsViewModel
+                )
+            }
+            composable("host") {
+                HostScreen(
+                    navController,
+                    authViewModel,
+                    eventsViewModel,
+                    userDataViewModel
+                )
+            }
+            composable("events") { EventsScreen(userDataViewModel, null, eventsViewModel) }
             composable("events/{eventId}") { backStackEntry ->
                 val eventId = backStackEntry.arguments?.getString("eventId")
-                EventsScreen(userDataViewModel, eventId)
+                EventsScreen(userDataViewModel, eventId, eventsViewModel)
             }
             composable("profile") { ProfileScreen(userDataViewModel) }
             composable("settings") { SettingsScreen(navController, authViewModel) }
