@@ -35,6 +35,7 @@ class AuthViewModel(
         return authenticationManager.currentUserId
     }
 
+
     fun signInWithEmailPassword(email: String, password: String) {
         viewModelScope.launch {
             val result = authenticationManager.signInWithEmailPassword(email, password)

@@ -13,3 +13,4 @@ data class Event(
     val description: String,
     val level: String,
 )
+

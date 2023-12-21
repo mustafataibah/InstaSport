@@ -6,11 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.amt.instasport.manager.AuthenticationManager
+import com.amt.instasport.manager.EventsDatabaseManager
 import com.amt.instasport.manager.UserDatabaseManager
+import com.amt.instasport.repository.EventRepository
 import com.amt.instasport.repository.UserRepository
 import com.amt.instasport.ui.theme.InstaSportTheme
 import com.amt.instasport.viewmodel.AuthViewModel
 import com.amt.instasport.viewmodel.AuthViewModelFactory
+import com.amt.instasport.viewmodel.EventsViewModel
+import com.amt.instasport.viewmodel.EventsViewModelFactory
 import com.amt.instasport.viewmodel.UserDataViewModel
 import com.amt.instasport.viewmodel.UserDataViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +30,8 @@ class MainActivity : ComponentActivity() {
         val firebaseDatabase = FirebaseDatabase.getInstance()
         val userDatabaseManager = UserDatabaseManager(firebaseDatabase)
         val userRepository = UserRepository(userDatabaseManager)
-//        val eventsDatabaseManager = EventsDatabaseManager(firebaseDatabase)
+        val eventsDatabaseManager = EventsDatabaseManager(firebaseDatabase)
+        val eventsRepository = EventRepository(eventsDatabaseManager)
 
 
         // AuthViewModel
@@ -43,12 +48,12 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        // EventsViewModel
-//        val eventsViewModel: EventsViewModel by viewModels {
-//            EventsViewModelFactory(
-//                eventsDatabaseManager
-//            )
-//        }
+         //EventsViewModel
+        val eventsViewModel: EventsViewModel by viewModels {
+            EventsViewModelFactory(
+                eventsRepository
+            )
+        }
 
         // TODO: fetchUserData and fetchEventsData methods to get all the users data if logged in
 //        if (firebaseAuth.currentUser != null) {
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             InstaSportTheme {
                 // Then Pass ViewModels to AppNavigation (so I believe that the lifecycle of the view models are based on the Main activities lifecycle)
-                AppNavigation(authViewModel, userDataViewModel)
+                AppNavigation(authViewModel, userDataViewModel, eventsViewModel)
             }
         }
     }

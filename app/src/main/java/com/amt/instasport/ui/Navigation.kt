@@ -1,3 +1,4 @@
+// navigation
 package com.amt.instasport.ui
 
 import androidx.compose.foundation.layout.padding
@@ -23,13 +24,14 @@ import com.amt.instasport.ui.view.HostScreen
 import com.amt.instasport.ui.view.ProfileScreen
 import com.amt.instasport.ui.view.SettingsScreen
 import com.amt.instasport.viewmodel.AuthViewModel
+import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
 
 @Composable
 fun AppNavigation(
     authViewModel: AuthViewModel,
     userDataViewModel: UserDataViewModel,
-//    eventsViewModel: EventsViewModel
+    eventsViewModel: EventsViewModel
 ) {
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
@@ -70,8 +72,8 @@ fun AppNavigation(
             }
 
             // Main App Screens
-            composable("dashboard") { DashboardScreen(navController, userDataViewModel) }
-            composable("host") { HostScreen(navController) }
+            composable("dashboard") { DashboardScreen(navController,userDataViewModel,) }
+            composable("host") { HostScreen(navController,authViewModel,eventsViewModel,userDataViewModel) }
             composable("events") { EventsScreen() }
             composable("profile") { ProfileScreen(userDataViewModel) }
             composable("settings") { SettingsScreen(navController, authViewModel) }
@@ -80,4 +82,3 @@ fun AppNavigation(
         }
     }
 }
-
