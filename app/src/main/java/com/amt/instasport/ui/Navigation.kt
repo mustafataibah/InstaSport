@@ -34,21 +34,22 @@ fun AppNavigation(
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
 
-    Scaffold(topBar = {
-        if (currentDestination?.route in listOf(
-                "dashboard", "host", "events", "profile", "settings", "location"
-            )
-        ) {
-            currentDestination?.route?.let { TopBar(title = it, navController) }
+    Scaffold(
+        topBar = {
+            when {
+                currentDestination?.route in listOf("dashboard", "host", "profile", "settings") ->
+                    currentDestination?.route?.let { TopBar(title = it, navController) }
+                currentDestination?.route?.startsWith("events") == true ->
+                    currentDestination?.route?.let { TopBar(title = "Events", navController) }
+            }
+        },
+        bottomBar = {
+            if (currentDestination?.route in listOf("dashboard", "host", "profile", "settings") ||
+                currentDestination?.route?.startsWith("events") == true) {
+                BottomNavBar(navController)
+            }
         }
-    }, bottomBar = {
-        if (currentDestination?.route in listOf(
-                "dashboard", "host", "events", "profile", "settings"
-            )
-        ) {
-            BottomNavBar(navController)
-        }
-    }) { innerPadding ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "onboarding",
@@ -72,7 +73,11 @@ fun AppNavigation(
             // Main App Screens
             composable("dashboard") { DashboardScreen(navController, userDataViewModel) }
             composable("host") { HostScreen(navController) }
-            composable("events") { EventsScreen() }
+            composable("events") { EventsScreen(userDataViewModel) }
+            composable("events/{eventId}") { backStackEntry ->
+                val eventId = backStackEntry.arguments?.getString("eventId")
+                EventsScreen(userDataViewModel, eventId)
+            }
             composable("profile") { ProfileScreen(userDataViewModel) }
             composable("settings") { SettingsScreen(navController, authViewModel) }
             composable("location") { GoogleMapComposable(navController) }

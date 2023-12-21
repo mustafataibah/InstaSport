@@ -50,7 +50,7 @@ fun BottomNavBar(navController: NavController) {
         )
         NavigationBarItem(
             icon = {
-                Icon (imageVector = if (currentRoute == "events") Icons.Filled.List else Icons.Outlined.List,
+                Icon (imageVector = if (currentRoute?.startsWith("events") == true) Icons.Filled.List else Icons.Outlined.List,
                     contentDescription = "Events")
             },
             label = { Text ("Events") },

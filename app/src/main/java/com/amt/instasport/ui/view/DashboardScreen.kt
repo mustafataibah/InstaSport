@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -274,19 +273,7 @@ fun SportsItem(sport: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardEventItem(navController: NavController, event: Event) {
-    val (
-        eventId: String,
-        hostUserId: String,
-        hostUserName: String,
-        title: String,
-        sportType: SportsInterest,
-        eventLocation: String,
-        eventDistance: Double,
-        dateTime: String,
-        maxParticipants: Int,
-        description: String,
-        level: String
-    ) = event
+    val (_, _, hostUserName: String, title: String, _, _, _, _, _, _, _) = event
 
     ElevatedCard(
         modifier = Modifier.size(250.dp, 112.dp),
@@ -294,7 +281,7 @@ fun DashboardEventItem(navController: NavController, event: Event) {
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
-        onClick = { navController.navigate("events") }
+        onClick = { navController.navigate("events/${event.eventId}") }
     ) {
         Column(
             modifier = Modifier
