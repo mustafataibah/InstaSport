@@ -35,22 +35,34 @@ fun AppNavigation(
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
 
-    Scaffold(
-        topBar = {
-            when {
-                currentDestination?.route in listOf("dashboard", "host", "profile", "settings") ->
-                    currentDestination?.route?.let { TopBar(title = it, navController) }
-                currentDestination?.route?.startsWith("events") == true ->
-                    currentDestination?.route?.let { TopBar(title = "Events", navController) }
-            }
-        },
-        bottomBar = {
-            if (currentDestination?.route in listOf("dashboard", "host", "profile", "settings") ||
-                currentDestination?.route?.startsWith("events") == true) {
-                BottomNavBar(navController)
+    Scaffold(topBar = {
+        when {
+            currentDestination?.route in listOf(
+                "dashboard",
+                "host",
+                "profile",
+                "settings",
+                "location"
+            ) -> currentDestination?.route?.let { TopBar(title = it, navController) }
+
+            currentDestination?.route?.startsWith("events") == true -> currentDestination.route?.let {
+                TopBar(
+                    title = "Events",
+                    navController
+                )
             }
         }
-    ) { innerPadding ->
+    }, bottomBar = {
+        if (currentDestination?.route in listOf(
+                "dashboard",
+                "host",
+                "profile",
+                "settings"
+            ) || currentDestination?.route?.startsWith("events") == true
+        ) {
+            BottomNavBar(navController)
+        }
+    }) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "onboarding",
@@ -61,10 +73,7 @@ fun AppNavigation(
             composable("landing") { LandingScreen(navController) }
             composable("login") {
                 LoginScreen(
-                    navController,
-                    authViewModel,
-                    userDataViewModel,
-                    eventsViewModel
+                    navController, authViewModel, userDataViewModel, eventsViewModel
                 )
             }
             composable("signUp") { SignUpScreen(navController, authViewModel) }
@@ -82,17 +91,12 @@ fun AppNavigation(
             // Main App Screens
             composable("dashboard") {
                 DashboardScreen(
-                    navController,
-                    userDataViewModel,
-                    eventsViewModel
+                    navController, userDataViewModel, eventsViewModel
                 )
             }
             composable("host") {
                 HostScreen(
-                    navController,
-                    authViewModel,
-                    eventsViewModel,
-                    userDataViewModel
+                    navController, authViewModel, eventsViewModel, userDataViewModel
                 )
             }
             composable("events") { EventsScreen(userDataViewModel, null, eventsViewModel) }

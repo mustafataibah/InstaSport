@@ -8,13 +8,12 @@ import com.amt.instasport.model.Event
 import com.amt.instasport.repository.EventRepository
 import kotlinx.coroutines.launch
 
-// GPT
+// GPT Code
 class EventsViewModelFactory(private val eventRepository: EventRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(EventsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return EventsViewModel(eventRepository) as T
+            @Suppress("UNCHECKED_CAST") return EventsViewModel(eventRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
@@ -22,7 +21,7 @@ class EventsViewModelFactory(private val eventRepository: EventRepository) :
 
 
 class EventsViewModel(private val eventRepository: EventRepository) : ViewModel() {
-    val currentEvents = MutableLiveData<Event?>()
+    private val currentEvents = MutableLiveData<Event?>()
     val allEvents = MutableLiveData<List<Event>>()
 
     fun uploadEventsData(event: Event) {
@@ -32,12 +31,12 @@ class EventsViewModel(private val eventRepository: EventRepository) : ViewModel(
         }
     }
 
-    fun fetchEvents(eventId: String) {
-        viewModelScope.launch {
-            val events = eventRepository.getEvent(eventId)
-            currentEvents.value = events
-        }
-    }
+//    fun fetchEvents(eventId: String) {
+//        viewModelScope.launch {
+//            val events = eventRepository.getEvent(eventId)
+//            currentEvents.value = events
+//        }
+//    }
 
     fun fetchAllEvents() {
         viewModelScope.launch {

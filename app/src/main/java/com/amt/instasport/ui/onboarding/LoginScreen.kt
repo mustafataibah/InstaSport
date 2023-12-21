@@ -3,7 +3,9 @@ package com.amt.instasport.ui.onboarding
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -75,12 +76,9 @@ fun LoginScreen(
 
     LaunchedEffect(authState) {
         when (authState) {
-            AuthViewModel.AuthenticationState.FAILED ->
-                Toast.makeText(
-                    context,
-                    "Something went wrong, please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.FAILED -> Toast.makeText(
+                context, "Something went wrong, please try again", Toast.LENGTH_SHORT
+            ).show()
 
             // Email Auth States
             AuthViewModel.AuthenticationState.AUTHENTICATED_EMAIL -> {
@@ -142,9 +140,7 @@ fun LoginScreen(
             Toast.makeText(context, "Google Sign-In failed: ${e.message}", Toast.LENGTH_LONG).show()
         } catch (e: FirebaseAuthException) {
             Toast.makeText(
-                context,
-                "Firebase authentication failed: ${e.message}",
-                Toast.LENGTH_LONG
+                context, "Firebase authentication failed: ${e.message}", Toast.LENGTH_LONG
             ).show()
         } catch (e: Exception) {
             Toast.makeText(context, "An unexpected error occurred: ${e.message}", Toast.LENGTH_LONG)
@@ -201,8 +197,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    onClick = { /* TODO: Handle forgot password */ },
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    onClick = { }, modifier = Modifier.align(Alignment.CenterVertically)
                 ) {
                     Text("Forgot Password?", modifier = Modifier.padding(end = 8.dp))
                 }
@@ -239,14 +234,12 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 SocialLoginButton(
-                    icon = ImageVector.vectorResource(R.drawable.ic_google),
-                    onClick = {
+                    icon = ImageVector.vectorResource(R.drawable.ic_google), onClick = {
                         val client = authViewModel.getGoogleSignInClient(context)
                         val signInIntent = client.signInIntent
                         authViewModel.signOutFromGoogle(context)
                         googleSignInLauncher.launch(signInIntent)
-                    },
-                    modifier = Modifier.weight(1f)
+                    }, modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(8.dp))
                 SocialLoginButton(
@@ -273,9 +266,14 @@ fun SocialLoginButton(icon: ImageVector, onClick: () -> Unit, modifier: Modifier
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .shadow(elevation = 1.dp, shape = RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(8.dp))
+            .background(
+                MaterialTheme.colorScheme.background, shape = RoundedCornerShape(8.dp)
+            )
             .clickable(onClick = onClick)
+            .border(
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(8.dp)
+            )
     ) {
         Icon(
             imageVector = icon,

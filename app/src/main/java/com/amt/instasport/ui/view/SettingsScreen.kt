@@ -43,8 +43,7 @@ fun SettingsScreen(navController: NavController? = null, authViewModel: AuthView
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,38 +68,23 @@ fun SettingsScreen(navController: NavController? = null, authViewModel: AuthView
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 4.dp,
-                        bottom = 4.dp
+                        start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp
                     )
             ) {
                 item {
-                    SettingsItem(
-                        title = "Edit Profile",
-                        switchable = false,
-                        onClick = {})
+                    SettingsItem(title = "Edit Profile", switchable = false, onClick = {})
                     Divider()
                 }
                 item {
-                    SettingsItem(
-                        title = "Change Password",
-                        switchable = false,
-                        onClick = {})
+                    SettingsItem(title = "Change Password", switchable = false, onClick = {})
                     Divider()
                 }
                 item {
-                    SettingsItem(
-                        title = "Privacy",
-                        switchable = false,
-                        onClick = {})
+                    SettingsItem(title = "Privacy", switchable = false, onClick = {})
                     Divider()
                 }
                 item {
-                    SettingsItem(
-                        title = "Notifications",
-                        switchable = true,
-                        onClick = {})
+                    SettingsItem(title = "Notifications", switchable = true, onClick = {})
                 }
             }
         }
@@ -126,29 +110,19 @@ fun SettingsScreen(navController: NavController? = null, authViewModel: AuthView
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 4.dp,
-                        bottom = 4.dp
+                        start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp
                     )
             ) {
                 item {
-                    SettingsItem(
-                        title = "Add Account",
-                        switchable = false,
-                        onClick = {})
+                    SettingsItem(title = "Add Account", switchable = false, onClick = {})
                     Divider()
                 }
                 item {
-                    SettingsItem(
-                        title = "Payment Methods",
-                        switchable = false,
-                        onClick = {})
+                    SettingsItem(title = "Payment Methods", switchable = false, onClick = {})
                     Divider()
                 }
                 item {
-                    SettingsItem(
-                        title = "Log Out",
+                    SettingsItem(title = "Log Out",
                         switchable = false,
                         Icons.Default.AccountBox,
                         onClick = { showLogoutDialog = true })
@@ -169,8 +143,7 @@ fun SettingsScreen(navController: NavController? = null, authViewModel: AuthView
 
 @Composable
 private fun LogoutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
+    AlertDialog(onDismissRequest = onDismiss,
         title = { Text(text = "Log Out", fontWeight = FontWeight.Bold) },
         text = { Text("Are you sure you want to log out?", fontSize = 18.sp) },
         confirmButton = {
@@ -182,8 +155,7 @@ private fun LogoutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
             TextButton(onClick = onDismiss) {
                 Text("Cancel", fontSize = 18.sp)
             }
-        }
-    )
+        })
 }
 
 @Composable

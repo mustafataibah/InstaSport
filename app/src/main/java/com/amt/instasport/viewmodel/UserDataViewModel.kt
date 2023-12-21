@@ -8,13 +8,12 @@ import com.amt.instasport.model.User
 import com.amt.instasport.repository.UserRepository
 import kotlinx.coroutines.launch
 
-// GPT
+// GPT Code
 class UserDataViewModelFactory(private val userRepository: UserRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(UserDataViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return UserDataViewModel(userRepository) as T
+            @Suppress("UNCHECKED_CAST") return UserDataViewModel(userRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

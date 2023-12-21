@@ -17,8 +17,6 @@ fun InstaSportTheme(content: @Composable () -> Unit) {
     val colorScheme = lightColorScheme
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        colorScheme = colorScheme, typography = Typography, content = content
     )
 }

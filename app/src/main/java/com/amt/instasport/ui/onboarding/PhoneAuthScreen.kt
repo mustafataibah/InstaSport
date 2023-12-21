@@ -34,12 +34,9 @@ import androidx.navigation.NavController
 import com.amt.instasport.R
 import com.amt.instasport.viewmodel.AuthViewModel
 
-// TODO: Animate fade in of the picture when the verification code is sent
 @Composable
 fun PhoneAuthScreen(
-    navController: NavController? = null,
-    authViewModel: AuthViewModel,
-    signUpOrLogin: String
+    navController: NavController? = null, authViewModel: AuthViewModel, signUpOrLogin: String
 ) {
     val authState by authViewModel.authenticationState.observeAsState()
     val context = LocalContext.current
@@ -51,23 +48,22 @@ fun PhoneAuthScreen(
 
     LaunchedEffect(authState) {
         when (authState) {
-            AuthViewModel.AuthenticationState.FAILED ->
-                Toast.makeText(context, "Something went wrong try again", Toast.LENGTH_SHORT).show()
+            AuthViewModel.AuthenticationState.FAILED -> Toast.makeText(
+                context,
+                "Something went wrong try again",
+                Toast.LENGTH_SHORT
+            ).show()
 
             AuthViewModel.AuthenticationState.NEW_USER_PHONE -> navController?.navigate("userInfo")
-            AuthViewModel.AuthenticationState.INVALID_PHONE_CODE ->
-                Toast.makeText(
-                    context,
-                    "Invalid phone number, please check and retry",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.INVALID_PHONE_CODE -> Toast.makeText(
+                context, "Invalid phone number, please check and retry", Toast.LENGTH_SHORT
+            ).show()
 
-            AuthViewModel.AuthenticationState.PHONE_NUMBER_ALREADY_EXISTS ->
-                Toast.makeText(
-                    context,
-                    "This phone number is already associated with an account please login",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.PHONE_NUMBER_ALREADY_EXISTS -> Toast.makeText(
+                context,
+                "This phone number is already associated with an account please login",
+                Toast.LENGTH_SHORT
+            ).show()
 
             AuthViewModel.AuthenticationState.AUTHENTICATED_PHONE -> {
                 navController?.navigate("dashboard")
@@ -98,10 +94,8 @@ fun PhoneAuthScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            if (!isCodeSent)
-                "Please enter a US phone number, ex. 8571119922"
-            else
-                "Please enter the one time verification code sent to this number: $phoneNumber",
+            if (!isCodeSent) "Please enter a US phone number, ex. 8571119922"
+            else "Please enter the one time verification code sent to this number: $phoneNumber",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -125,9 +119,7 @@ fun PhoneAuthScreen(
                     Log.d("RegisterScreen", "Start Phone Number Verification : $phoneNumber")
                     authViewModel.startPhoneNumberVerification(phoneNumber)
                     isCodeSent = true
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Send Verification Code")
             }
@@ -147,12 +139,9 @@ fun PhoneAuthScreen(
             Button(
                 onClick = {
                     authViewModel.verifyPhoneNumberWithCode(
-                        authViewModel.storedVerificationId,
-                        verificationCode
+                        authViewModel.storedVerificationId, verificationCode
                     )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Verify Code")
             }
@@ -168,15 +157,13 @@ fun VerificationImage(isCodeSent: Boolean) {
         Image(
             painter = painterResource(id = R.drawable.phone),
             contentDescription = "Sign Up",
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
     } else {
         Image(
             painter = painterResource(id = R.drawable.phone2),
             contentDescription = "Sign Up",
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

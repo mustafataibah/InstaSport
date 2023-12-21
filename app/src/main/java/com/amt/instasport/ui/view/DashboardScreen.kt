@@ -66,7 +66,7 @@ fun DashboardScreen(
 
 
     val recommendedEvents = if (mySports.isNullOrEmpty()) {
-        listOf<Event>()
+        listOf()
     } else {
         allEvents.filter { event ->
             mySports.any { interest ->
@@ -93,8 +93,8 @@ fun DashboardScreen(
 }
 
 @Composable
-fun GreetingSection (name: String?) {
-    Column (
+fun GreetingSection(name: String?) {
+    Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
     ) {
@@ -121,8 +121,8 @@ fun GreetingSection (name: String?) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MySportsSection (navController: NavController, mySports: List<String>?) {
-    Column (
+fun MySportsSection(navController: NavController, mySports: List<String>?) {
+    Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
@@ -161,17 +161,14 @@ fun MySportsSection (navController: NavController, mySports: List<String>?) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    ElevatedCard(
-                        modifier = Modifier.size(85.dp),
+                    ElevatedCard(modifier = Modifier.size(85.dp),
                         shape = RoundedCornerShape(28.dp),
                         elevation = CardDefaults.cardElevation(
                             defaultElevation = 4.dp
                         ),
-                        onClick = { navController.navigate("profile") }
-                    ) {
+                        onClick = { navController.navigate("profile") }) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
@@ -201,8 +198,8 @@ fun MySportsSection (navController: NavController, mySports: List<String>?) {
 }
 
 @Composable
-fun EventsSection (navController: NavController, eventsList: List<Event>) {
-    Column (
+fun EventsSection(navController: NavController, eventsList: List<Event>) {
+    Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
@@ -294,14 +291,12 @@ fun SportsItem(sport: String) {
 fun DashboardEventItem(navController: NavController, event: Event) {
     val (_, _, hostUserName: String, title: String, _, _, _, _, _, _, _) = event
 
-    ElevatedCard(
-        modifier = Modifier.size(250.dp, 112.dp),
+    ElevatedCard(modifier = Modifier.size(250.dp, 112.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
-        onClick = { navController.navigate("events/${event.eventId}") }
-    ) {
+        onClick = { navController.navigate("events/${event.eventId}") }) {
         Column(
             modifier = Modifier
                 .padding(16.dp)

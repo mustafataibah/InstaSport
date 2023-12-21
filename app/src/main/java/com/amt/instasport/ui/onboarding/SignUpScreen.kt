@@ -74,9 +74,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
             Toast.makeText(context, "Google Sign-In failed: ${e.message}", Toast.LENGTH_LONG).show()
         } catch (e: FirebaseAuthException) {
             Toast.makeText(
-                context,
-                "Firebase authentication failed: ${e.message}",
-                Toast.LENGTH_LONG
+                context, "Firebase authentication failed: ${e.message}", Toast.LENGTH_LONG
             ).show()
         } catch (e: Exception) {
             Toast.makeText(context, "An unexpected error occurred: ${e.message}", Toast.LENGTH_LONG)
@@ -84,31 +82,23 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
         }
     }
 
-//    val googleSignInLauncher = googleSignInLauncher(authViewModel)
-//    HandleAuthState(authViewModel, navController)
-
-
     LaunchedEffect(authState) {
         when (authState) {
             // Email/Password Auth States
             AuthViewModel.AuthenticationState.NEW_USER -> navController.navigate("userInfo")
-            AuthViewModel.AuthenticationState.USER_ALREADY_EXISTS ->
-                Toast.makeText(context, "User already exists. Please login.", Toast.LENGTH_SHORT)
-                    .show()
+            AuthViewModel.AuthenticationState.USER_ALREADY_EXISTS -> Toast.makeText(
+                context,
+                "User already exists. Please login.",
+                Toast.LENGTH_SHORT
+            ).show()
 
-            AuthViewModel.AuthenticationState.WEAK_PASSWORD ->
-                Toast.makeText(
-                    context,
-                    "Password is too weak. Please use a stronger password.",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.WEAK_PASSWORD -> Toast.makeText(
+                context, "Password is too weak. Please use a stronger password.", Toast.LENGTH_SHORT
+            ).show()
 
-            AuthViewModel.AuthenticationState.INVALID_EMAIL ->
-                Toast.makeText(
-                    context,
-                    "Invalid email address. Please check and try again.",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.INVALID_EMAIL -> Toast.makeText(
+                context, "Invalid email address. Please check and try again.", Toast.LENGTH_SHORT
+            ).show()
 
             // Google Auth States
             AuthViewModel.AuthenticationState.NEW_USER_GOOGLE -> navController.navigate("userInfo")
@@ -121,12 +111,9 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel) {
                 ).show()
             }
 
-            AuthViewModel.AuthenticationState.FAILED ->
-                Toast.makeText(
-                    context,
-                    "Something went wrong, please try again!",
-                    Toast.LENGTH_SHORT
-                ).show()
+            AuthViewModel.AuthenticationState.FAILED -> Toast.makeText(
+                context, "Something went wrong, please try again!", Toast.LENGTH_SHORT
+            ).show()
 
             else -> {
             }

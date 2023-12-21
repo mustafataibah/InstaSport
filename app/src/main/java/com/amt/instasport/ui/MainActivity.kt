@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-         //EventsViewModel
+        //EventsViewModel
         val eventsViewModel: EventsViewModel by viewModels {
             EventsViewModelFactory(
                 eventsRepository
@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             InstaSportTheme {
-                // Then Pass ViewModels to AppNavigation (so I believe that the lifecycle of the view models are based on the Main activities lifecycle)
                 AppNavigation(authViewModel, userDataViewModel, eventsViewModel)
             }
         }

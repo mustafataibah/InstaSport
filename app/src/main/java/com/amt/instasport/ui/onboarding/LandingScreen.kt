@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.amt.instasport.R
 
@@ -63,7 +64,7 @@ fun LandingScreen(navController: NavController) {
                     .width(380.dp)
                     .height(50.dp)
             ) {
-                Text("Sign Up")
+                Text("Sign Up", fontSize = 16.sp)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -81,7 +82,7 @@ fun LandingScreen(navController: NavController) {
                     .height(50.dp)
             ) {
                 Text(
-                    "Login", color = MaterialTheme.colorScheme.primary
+                    "Login", color = MaterialTheme.colorScheme.primary, fontSize = 16.sp
                 )
             }
         }

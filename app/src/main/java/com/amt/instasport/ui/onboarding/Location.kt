@@ -3,7 +3,7 @@ package com.amt.instasport.ui.onboarding
 import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
-import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,7 +54,7 @@ import com.google.android.gms.maps.model.LatLng
 fun LocationScreen(navController: NavController) {
     var showOverlay by remember { mutableStateOf(true) }
     var showManual by remember { mutableStateOf(false) }
-    var expanded by remember { mutableStateOf(false) }
+    var selectedCity by remember { mutableStateOf("") }
     var userLocation by remember { mutableStateOf<Location?>(null) }
     val context = LocalContext.current
     val fusedLocationClient: FusedLocationProviderClient =
@@ -61,9 +67,6 @@ fun LocationScreen(navController: NavController) {
         if (locationPermissionState.status.isGranted) {
             fetchLocation(fusedLocationClient) { location ->
                 userLocation = location
-                Log.d(
-                    "LocationScreen", "User location: ${location.latitude}, ${location.longitude}"
-                )
             }
         }
     }
@@ -81,13 +84,7 @@ fun LocationScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                ManualLocation { latLng ->
-                    userLocation = Location("").apply {
-                        latitude = latLng.latitude
-                        longitude = latLng.longitude
-                    }
-                    showManual = false
-                }
+                ManualLocation(onCitySelected = { city -> selectedCity = city })
             }
         } else {
             Column(
@@ -156,66 +153,74 @@ fun Overlay(
                     .width(300.dp)
                     .height(50.dp)
             ) {
-                Text("Use Device Location", fontSize = 20.sp)
+                Text("Use Device Location", fontSize = 16.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text("or", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Medium)
+            Text("or", color = Color.White, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     showOverlay(false)
                     showManual(true)
                 },
-                Modifier
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                ),
+                border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary),
+                modifier = Modifier
                     .width(300.dp)
                     .height(50.dp)
             ) {
-                Text("Manually Enter Location", fontSize = 20.sp)
+                Text("Manually Enter Location", fontSize = 16.sp)
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManualLocation(onCitySelected: (LatLng) -> Unit) {
-    val cities = listOf("New York", "Boston", "San Francisco")
-    var selectedCity by remember { mutableStateOf(cities.first()) }
+fun ManualLocation(onCitySelected: (String) -> Unit) {
+    val cities = arrayOf("New York", "Boston", "San Francisco")
+    var selectedCity by remember { mutableStateOf(cities[0]) }
     var expanded by remember { mutableStateOf(false) }
-    val cityCoordinates = mapOf(
-        "New York" to LatLng(40.7128, -74.0060),
-        "Boston" to LatLng(42.3601, -71.0589),
-        "San Francisco" to LatLng(37.7749, -122.4194)
-    )
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(
-            onClick = { expanded = true },
+        Spacer(modifier = Modifier.weight(1f))
+        Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(selectedCity)
+            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
+                expanded = !expanded
+            }) {
+                OutlinedTextField(
+                    value = selectedCity,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Sport") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.menuAnchor(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    cities.forEach { item ->
+                        DropdownMenuItem(text = { Text(text = item) }, onClick = {
+                            selectedCity = item
+                            expanded = false
+                            onCitySelected(item)
+                        })
+                    }
+                }
+            }
         }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            // TODO: DropDown Items
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = {
-                val selectedCoordinates = cityCoordinates[selectedCity] ?: return@Button
-                onCitySelected(selectedCoordinates)
-            },
-            modifier = Modifier.fillMaxWidth()
+            onClick = {}, modifier = Modifier
+                .fillMaxWidth(.8f)
+                .height(50.dp)
         ) {
             Text("Confirm Location")
         }

@@ -87,7 +87,7 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
                         label = { Text("Edit Name") },
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
@@ -112,9 +112,11 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp,
                     )
-                    Button(onClick = { setIsEditing(true)
-                        setEditedName(user.name) },
-                        modifier = Modifier.padding(8.dp)
+                    Button(
+                        onClick = {
+                            setIsEditing(true)
+                            setEditedName(user.name)
+                        }, modifier = Modifier.padding(8.dp)
                     ) {
                         Text("Edit Name")
                     }

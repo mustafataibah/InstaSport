@@ -182,7 +182,7 @@ fun GenderInput(selectedGender: String, onGenderChange: (String) -> Unit) {
                 .width(150.dp)
                 .padding(vertical = 4.dp)
         ) {
-            Text(text = gender, modifier = Modifier.padding(8.dp))
+            Text(text = gender, modifier = Modifier.padding(8.dp), fontSize = 16.sp)
         }
     }
 }
@@ -190,12 +190,7 @@ fun GenderInput(selectedGender: String, onGenderChange: (String) -> Unit) {
 @Composable
 fun SportsInterestInput(selectedSports: MutableList<String>) {
     val sports = listOf("football", "volleyball", "basketball", "badminton", "tennis", "squash")
-    Text(
-        text = "Choose your game",
-        fontSize = 36.sp,
-        fontWeight = FontWeight.Bold,
-    )
-    Spacer(Modifier.height(30.dp))
+    Spacer(Modifier.height(100.dp))
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -203,7 +198,8 @@ fun SportsInterestInput(selectedSports: MutableList<String>) {
         items(sports.chunked(2)) { rowSports ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 rowSports.forEach { sport ->
-                    SportImage(sportName = sport,
+                    SportImage(
+                        sportName = sport,
                         isSelected = selectedSports.contains(sport),
                         onClick = {
                             if (selectedSports.contains(sport)) {

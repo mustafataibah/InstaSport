@@ -9,9 +9,8 @@ import kotlinx.coroutines.tasks.await
 class UserDatabaseManager(private val firebaseDatabase: FirebaseDatabase) {
     suspend fun uploadUserDataToDatabase(user: User) {
         try {
-            firebaseDatabase.reference.child("users").child(user.uid)
-                .setValue(user).await()
-        } catch (e: Exception) {
+            firebaseDatabase.reference.child("users").child(user.uid).setValue(user).await()
+        } catch (_: Exception) {
         }
     }
 

@@ -97,8 +97,7 @@ fun EventsScreen(
     */
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -131,23 +130,19 @@ fun EventsScreen(
             }
             items(allEvents.sortedBy { it.eventDistance }) { event ->
                 when (selectedTab) {
-                    EventTab.AllEvents -> EventItem(
-                        event = event,
+                    EventTab.AllEvents -> EventItem(event = event,
                         isExpanded = selectedEvent == event.eventId,
                         onExpand = { expanded ->
                             selectedEvent = if (expanded) event.eventId else null
-                        }
-                    )
+                        })
 
                     EventTab.MySports -> {
                         if (mySports?.contains(event.sportType.sportName.replaceFirstChar { it.uppercaseChar() }) == true) {
-                            EventItem(
-                                event = event,
+                            EventItem(event = event,
                                 isExpanded = selectedEvent == event.eventId,
                                 onExpand = { expanded ->
                                     selectedEvent = if (expanded) event.eventId else null
-                                }
-                            )
+                                })
                         }
                     }
                 }
@@ -186,106 +181,99 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
 
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value) {
-        AlertDialog(
-            title = {
+        AlertDialog(title = {
+            Column {
+                Text(
+                    text = event.title,
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                Divider()
+            }
+        }, text = {
+            Column {
                 Column {
                     Text(
-                        text = event.title,
+                        text = "Sport",
                         fontFamily = InstaSportFont,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        fontSize = 16.sp,
                     )
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Divider()
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text = event.sportType.sportName.replaceFirstChar { it.uppercaseChar() },
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
                 }
-            },
-            text = {
+                Spacer(modifier = Modifier.padding(5.dp))
                 Column {
-                    Column {
-                        Text(
-                            text = "Sport",
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                        )
-                        Spacer(modifier = Modifier.padding(1.dp))
-                        Text(
-                            text = event.sportType.sportName.replaceFirstChar { it.uppercaseChar() },
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Column {
-                        Text(
-                            text = "Description",
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                        )
-                        Spacer(modifier = Modifier.padding(1.dp))
-                        Text(
-                            text = event.description,
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Column {
-                        Text(
-                            text = "Location",
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                        )
-                        Spacer(modifier = Modifier.padding(1.dp))
-                        Text(
-                            text = event.eventLocation,
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Column {
-                        Text(
-                            text = "Date",
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                        )
-                        Spacer(modifier = Modifier.padding(1.dp))
-                        Text(
-                            text = event.dateTime,
-                            fontFamily = InstaSportFont,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                        )
-                    }
+                    Text(
+                        text = "Description",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text = event.description,
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
                 }
-            },
-            onDismissRequest = { showDialog.value = false },
-            confirmButton = {
-                TextButton(onClick = { showDialog.value = false } ) {
-                    Text("OK")
+                Spacer(modifier = Modifier.padding(5.dp))
+                Column {
+                    Text(
+                        text = "Location",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text = event.eventLocation,
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
                 }
-            },
-            dismissButton = {}
-        )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Column {
+                    Text(
+                        text = "Date",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text = event.dateTime,
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+        }, onDismissRequest = { showDialog.value = false }, confirmButton = {
+            TextButton(onClick = { showDialog.value = false }) {
+                Text("OK")
+            }
+        }, dismissButton = {})
     }
 
     LaunchedEffect(isExpanded) {
         localExpanded = isExpanded
     }
 
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = if (isExpanded) MaterialTheme.colorScheme.secondary else Color.White
-        ),
+    Card(colors = CardDefaults.cardColors(
+        containerColor = if (isExpanded) MaterialTheme.colorScheme.secondary else Color.White
+    ),
         border = if (isExpanded) null else BorderStroke(1.dp, Color.LightGray),
         modifier = Modifier
             .fillMaxWidth()
@@ -293,8 +281,7 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
             .clickable {
                 localExpanded = !localExpanded
                 onExpand(localExpanded)
-            }
-    ) {
+            }) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -361,8 +348,7 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     OutlinedButton(
-                        onClick = { showDialog.value = true },
-                        modifier = Modifier.padding(
+                        onClick = { showDialog.value = true }, modifier = Modifier.padding(
                         )
                     ) {
                         Text(
@@ -378,8 +364,7 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                         when {
                             (joinEnabled) -> Text(text = "Join")
                             else -> Text(text = "Joined")
-                        }
-                        /* TODO: add to database, remember joined state */
+                        }/* TODO: add to database, remember joined state */
                     }
                 }
             }

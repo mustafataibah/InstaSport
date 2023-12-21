@@ -1,9 +1,7 @@
 package com.amt.instasport.ui.view
 
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +21,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,8 +58,7 @@ fun HostScreen(
     var date by remember { mutableStateOf("") }
     val userName = userName(userDataViewModel = userDataViewModel!!)
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,7 +72,7 @@ fun HostScreen(
             shape = RoundedCornerShape(12.dp),
             singleLine = true
         )
-        Row () {
+        Row {
             OutlinedTextField(
                 value = eventLocation,
                 onValueChange = { eventLocation = it },
@@ -99,11 +95,11 @@ fun HostScreen(
 
         ExposedDropdownMenu(onSportSelected = { sport -> selectedSport = sport })
 
-        Row(){
-            dateText(onTextChanged = { text -> date = text })
+        Row {
+            DateText(onTextChanged = { text -> date = text })
         }
 
-        descriptionBox(onTextChanged = { text -> description = text })
+        DescriptionBox(onTextChanged = { text -> description = text })
 
         Button(
             onClick = {
@@ -115,25 +111,25 @@ fun HostScreen(
                         interestID = "${System.currentTimeMillis()}_${uid}_interest",
                         sportName = selectedSport
                     )
-                    val event =
-                        Event(
-                            eventId = "${System.currentTimeMillis()}_${uid}_event",
-                            hostUserId = uid,
-                            hostUserName = userName,
-                            title = eventName,
-                            sportType = sportsInterest,
-                            eventLocation = eventLocation,
-                            dateTime = date,
-                            maxParticipants = numCapacity,
-                            description = description,
-                            eventDistance = Random.nextDouble(0.1, 6.0),
-                            level = "Expert")
+                    val event = Event(
+                        eventId = "${System.currentTimeMillis()}_${uid}_event",
+                        hostUserId = uid,
+                        hostUserName = userName,
+                        title = eventName,
+                        sportType = sportsInterest,
+                        eventLocation = eventLocation,
+                        dateTime = date,
+                        maxParticipants = numCapacity,
+                        description = description,
+                        eventDistance = Random.nextDouble(0.1, 6.0),
+                        level = "Expert"
+                    )
 
 
                     eventsViewModel?.uploadEventsData(event)
 
                     navController?.navigate("events")
-                    Log.d("Hostscreen","Event created")
+                    Log.d("Hostscreen", "Event created")
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -146,25 +142,20 @@ fun HostScreen(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExposedDropdownMenu(onSportSelected: (String)->Unit) {
+fun ExposedDropdownMenu(onSportSelected: (String) -> Unit) {
     val context = LocalContext.current
-    val sports = arrayOf("Badminton", "Basketball", "Football", "Soccer", "Volleyball", "Tennis")
+    val sports = arrayOf("Badminton", "Basketball", "Football", "Squash", "Tennis", "Volleyball")
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(sports[0]) }
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            }
-        ) {
+        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
+            expanded = !expanded
+        }) {
             OutlinedTextField(
                 value = selectedText,
                 onValueChange = {},
@@ -174,20 +165,14 @@ fun ExposedDropdownMenu(onSportSelected: (String)->Unit) {
                 modifier = Modifier.menuAnchor(),
                 shape = RoundedCornerShape(12.dp)
             )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 sports.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item) },
-                        onClick = {
-                            selectedText = item
-                            expanded = false
-                            onSportSelected(item)
-                            Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(text = item) }, onClick = {
+                        selectedText = item
+                        expanded = false
+                        onSportSelected(item)
+                        Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                    })
                 }
             }
         }
@@ -195,15 +180,12 @@ fun ExposedDropdownMenu(onSportSelected: (String)->Unit) {
 }
 
 @Composable
-fun descriptionBox(
-    onTextChanged: (String) -> Unit,
-    initialText: String = "",
-    maxWords: Int = 100
+fun DescriptionBox(
+    onTextChanged: (String) -> Unit, initialText: String = "", maxWords: Int = 100
 ) {
     var text by remember { mutableStateOf(initialText) }
 
-    OutlinedTextField(
-        value = text,
+    OutlinedTextField(value = text,
         onValueChange = {
             if (it.count { char -> char.isWhitespace() } < maxWords) {
                 text = it
@@ -218,27 +200,19 @@ fun descriptionBox(
         minLines = 3,
         maxLines = 5,
         isError = text.count { char -> char.isWhitespace() } > maxWords,
-        singleLine = false
-    )
+        singleLine = false)
 }
 
 @Composable
-fun dateText(
-    onTextChanged: (String) -> Unit,
-    initialText: String = "",
-    maxChar: Int = 8
-    ) {
-    val maxChar = 8
+fun DateText(
+    onTextChanged: (String) -> Unit, initialText: String = "", maxChar: Int = 8
+) {
+//    val maxChar = 8
     var text by remember { mutableStateOf(initialText) }
-    OutlinedTextField(
-        singleLine = true,
-        value = text,
-        onValueChange = {
-            if (it.length <= maxChar) text = it
-            onTextChanged(it)
-        },
-        label = { Text("Event Date") },
-        visualTransformation = DateTransformation()
+    OutlinedTextField(singleLine = true, value = text, onValueChange = {
+        if (it.length <= maxChar) text = it
+        onTextChanged(it)
+    }, label = { Text("Event Date") }, visualTransformation = DateTransformation()
     )
 }
 

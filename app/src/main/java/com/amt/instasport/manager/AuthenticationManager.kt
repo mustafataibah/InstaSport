@@ -82,8 +82,7 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
         }
 
         override fun onCodeSent(
-            verificationId: String,
-            token: PhoneAuthProvider.ForceResendingToken
+            verificationId: String, token: PhoneAuthProvider.ForceResendingToken
         ) {
             storedVerificationId = verificationId
             resendToken = token
@@ -92,17 +91,13 @@ class AuthenticationManager(private val firebaseAuth: FirebaseAuth) {
 
     fun startPhoneNumberVerification(phoneNumber: String) {
         val updatedPhoneNumber = formatToUSPhoneNumber(phoneNumber)
-        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber(updatedPhoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setCallbacks(callbacks)
-            .build()
+        val options = PhoneAuthOptions.newBuilder(firebaseAuth).setPhoneNumber(updatedPhoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS).setCallbacks(callbacks).build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     suspend fun verifyPhoneNumberWithCode(
-        verificationId: String?,
-        code: String
+        verificationId: String?, code: String
     ): AuthenticationState {
         if (verificationId.isNullOrEmpty() || code.isBlank()) {
             return AuthenticationState.FAILED
