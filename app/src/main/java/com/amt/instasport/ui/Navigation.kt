@@ -70,7 +70,7 @@ fun AppNavigation(
             }
 
             // Main App Screens
-            composable("dashboard") { DashboardScreen(userDataViewModel) }
+            composable("dashboard") { DashboardScreen(navController, userDataViewModel) }
             composable("host") { HostScreen(navController) }
             composable("events") { EventsScreen() }
             composable("profile") { ProfileScreen(userDataViewModel) }

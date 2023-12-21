@@ -82,7 +82,7 @@ fun OnboardingScreen(navController: NavHostController) {
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
                     fontFamily = InstaSportFont,
-                    fontWeight = FontWeight.Light,
+                    fontWeight = FontWeight.Normal,
                 )
             }
         }

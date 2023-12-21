@@ -33,6 +33,7 @@ import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,20 +43,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
-
-
-data class EventData(
-    val title: String,
-    val description: String,
-    val author: String,
-    val distance: Double,
-)
+import com.amt.instasport.model.Event
+import com.amt.instasport.model.SportsInterest
+import com.amt.instasport.ui.theme.InstaSportFont
 
 enum class EventTab {
     AllEvents, MySports
@@ -64,22 +60,21 @@ enum class EventTab {
 @Composable
 fun EventsScreen() {
     val eventsList = listOf(
-        EventData("Pickup Basketball", "Come play basketball with me!", "Jayson Tatum", 0.4),
-        EventData("Tennis Match", "Let's play a few friendly sets!", "Serena Williams", 0.7),
-        EventData(
-            "Volleyball Game", "Come play volleyball with my friends and I!", "Ricardo Souza", 1.2
-        ),
-        EventData(
-            "Recreational Soccer", "Join us in a quick soccer game", "Christiano Ronaldo", 1.3
-        ),
+        Event("test1", "serena.w", "Serena Williams", "Tennis Match", SportsInterest("tennis", "tennis"), "", 1.0, "12/21/23 6:30 PM", 4,"Let's play a few friendly sets!", "intermediate"),
+        Event("test2", "ricardo.s", "Ricardo Souza", "Volleyball Game", SportsInterest("volleyball", "volleyball"), "", 1.2, "12/22/23 5:00 PM", 6, "Come play volleyball with my friends and I!", "beginner"),
+        Event("test3", "cristiano.r", "Christiano Ronaldo", "Recreational Soccer", SportsInterest("soccer", "soccer"), "", 1.3, "12/23/23 4:00 PM", 10, "Join us in a quick soccer game", "all"),
+        Event("test4", "barney.d", "Barney D.", "Casual Badminton Match", SportsInterest("badminton", "badminton"), "", 0.1, "12/24/23 6:00 PM", 2, "Looking for a few people to play a casual game of badminton!", "beginner"),
+        Event("test5", "patrick.s", "Patrick S.", "Competitive Volleyball Game", SportsInterest("volleyball", "volleyball"), "", 0.3, "12/25/23 7:00 PM", 8, "Come join me in a competitive volleyball match (must be at least intermediate skill)", "intermediate"),
+        Event("test6", "charlie.b", "Charlie B.", "Local Football Match", SportsInterest("football", "football"), "", 0.6, "12/26/23 3:30 PM", 12, "Let's play a quick game of football, any locals welcome!", "all"),
+        Event("test7", "jayson.t", "Jayson Tatum", "Pickup Basketball", SportsInterest("basketball", "basketball"), "", 0.7, "12/27/23 5:45 PM", 5, "Come play basketball with me!", "all")
     )
 
     var selectedTab by remember { mutableStateOf(EventTab.AllEvents) }
+    var selectedEvent by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -89,8 +84,7 @@ fun EventsScreen() {
                 CustomTabIndicator(tabPositions[selectedTab.ordinal])
             },
             divider = { },
-            containerColor = Color.Transparent,
-            modifier = Modifier.padding(vertical = 8.dp)
+            containerColor = MaterialTheme.colorScheme.secondary,
         ) {
             Tab(
                 selected = selectedTab == EventTab.AllEvents,
@@ -110,8 +104,20 @@ fun EventsScreen() {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(eventsList) { event ->
-                EventItem(event)
+            item {
+                Spacer(modifier = Modifier.padding(8.dp))
+            }
+            items(eventsList.sortedBy { it.eventDistance }) { event ->
+                EventItem(
+                    event = event,
+                    isExpanded = selectedEvent == event.eventId,  // Assuming each EventData has a unique 'id'
+                    onExpand = { expanded ->
+                        selectedEvent = if (expanded) event.eventId else null
+                    }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.padding(8.dp))
             }
         }
     }
@@ -136,18 +142,40 @@ fun CustomTabIndicator(tabPosition: TabPosition) {
 }
 
 @Composable
-fun EventItem(event: EventData) {
-    val (title, description, author, distance) = event
-    var isExpanded by remember { mutableStateOf(false) }
+fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
+    val (
+     eventId: String,
+     hostUserId: String,
+     hostUserName: String,
+     title: String,
+     sportType: SportsInterest,
+     eventLocation: String,
+     eventDistance: Double,
+     dateTime: String,
+     maxParticipants: Int,
+     description: String,
+     level: String
+    ) = event
 
-    Card(colors = CardDefaults.cardColors(
-        containerColor = if (isExpanded) MaterialTheme.colorScheme.secondaryContainer else Color.White
-    ),
+    var localExpanded by remember { mutableStateOf(isExpanded) }
+
+    LaunchedEffect(isExpanded) {
+        localExpanded = isExpanded
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (isExpanded) MaterialTheme.colorScheme.secondary else Color.White
+        ),
         border = if (isExpanded) null else BorderStroke(1.dp, Color.LightGray),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { isExpanded = !isExpanded }) {
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable {
+                localExpanded = !localExpanded
+                onExpand(localExpanded)
+            }
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -168,14 +196,21 @@ fun EventItem(event: EventData) {
                         contentScale = ContentScale.Crop
                     )
                 }
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(8.dp))
                 Text(
-                    text = author,
-                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    text = hostUserName,
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "$distance mi away", modifier = Modifier.padding(horizontal = 4.dp)
+                    text = "$eventDistance mi away",
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
 
@@ -183,17 +218,21 @@ fun EventItem(event: EventData) {
 
             Text(
                 text = title,
-                style = TextStyle(fontWeight = FontWeight.Bold),
+                fontSize = 16.sp,
+                fontFamily = InstaSportFont,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.padding(2.dp))
-
-            if (isExpanded) {
+            if (localExpanded) {
+                Spacer(modifier = Modifier.padding(4.dp))
                 Text(
-                    text = description, modifier = Modifier.fillMaxWidth()
+                    text = description,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Normal
                 )
                 Spacer(modifier = Modifier.padding(6.dp))
 

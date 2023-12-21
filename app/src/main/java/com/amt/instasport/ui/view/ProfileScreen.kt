@@ -49,7 +49,7 @@ fun ProfileScreen(userDataViewModel: UserDataViewModel) {
 
     val mySports = currentUser?.followedSports?.map { sport ->
         sport.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-    }
+    }?.sortedBy { it.first() }
 
     Column(
         modifier = Modifier
