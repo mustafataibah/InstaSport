@@ -56,6 +56,8 @@ import com.amt.instasport.model.Event
 import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 enum class EventTab {
     AllEvents, MySports
@@ -175,6 +177,8 @@ fun CustomTabIndicator(tabPosition: TabPosition) {
 @Composable
 fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
     val (_, _, hostUserName: String, title: String, _, _, eventDistance: Double, _, _, description: String, _) = event
+
+    val roundEventDistance = BigDecimal(eventDistance).setScale(1, RoundingMode.HALF_EVEN).toDouble()
 
     var localExpanded by remember { mutableStateOf(isExpanded) }
     var joinEnabled by remember { mutableStateOf(true) }
@@ -313,7 +317,7 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "$eventDistance mi away",
+                    text = "$roundEventDistance mi away",
                     fontFamily = InstaSportFont,
                     fontWeight = FontWeight.Light,
                     modifier = Modifier.padding(horizontal = 4.dp)
