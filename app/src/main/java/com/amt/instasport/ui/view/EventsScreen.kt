@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -53,9 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amt.instasport.R
 import com.amt.instasport.model.Event
+import com.amt.instasport.ui.component.MapComposable
 import com.amt.instasport.ui.theme.InstaSportFont
 import com.amt.instasport.viewmodel.EventsViewModel
 import com.amt.instasport.viewmodel.UserDataViewModel
+import com.google.android.gms.maps.model.LatLng
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -77,26 +80,6 @@ fun EventsScreen(
     }?.sortedBy { it.first() }
     var selectedTab by remember { mutableStateOf(EventTab.AllEvents) }
     var selectedEvent by remember { mutableStateOf(initialEventId) }
-
-    /*
-    TODO: trying to auto-scroll to selected event card
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(initialEventId) {
-        initialEventId?.let { eventId ->
-            val index = eventsList.indexOfFirst { it.eventId == eventId }
-            if (index != -1) {
-                coroutineScope.launch {
-                    while (listState.layoutInfo.visibleItemsInfo.isEmpty()) {
-                        delay(10)
-                    }
-                    listState.animateScrollToItem(index)
-                }
-            }
-        }
-    }
-    */
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -183,8 +166,8 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
     var localExpanded by remember { mutableStateOf(isExpanded) }
     var joinEnabled by remember { mutableStateOf(true) }
 
-    val showDialog = remember { mutableStateOf(false) }
-    if (showDialog.value) {
+    val showInfoDialog = remember { mutableStateOf(false) }
+    if (showInfoDialog.value) {
         AlertDialog(title = {
             Column {
                 Text(
@@ -257,15 +240,89 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                     )
                     Spacer(modifier = Modifier.padding(1.dp))
                     Text(
-                        text = event.dateTime,
+                        text =
+                        "${event.dateTime.substring(0,2)}/${event.dateTime.substring(2,4)}/${event.dateTime.substring(4)}",
                         fontFamily = InstaSportFont,
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
                     )
                 }
             }
-        }, onDismissRequest = { showDialog.value = false }, confirmButton = {
-            TextButton(onClick = { showDialog.value = false }) {
+        }, onDismissRequest = { showInfoDialog.value = false }, confirmButton = {
+            TextButton(onClick = { showInfoDialog.value = false }) {
+                Text("OK")
+            }
+        }, dismissButton = {})
+    }
+
+    val showJoinDialog = remember { mutableStateOf(false) }
+    if (showJoinDialog.value) {
+        AlertDialog(title = {
+            Column {
+                Text(
+                    text = "You joined",
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = event.title,
+                    fontFamily = InstaSportFont,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                Divider()
+            }
+        }, text = {
+            Column {
+                Column {
+                    Text(
+                        text = "Location",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text = event.eventLocation,
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
+                }
+                Spacer(modifier = Modifier.padding(5.dp))
+                Box (modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                ) {
+                    MapComposable(LatLng(42.3650, -71.0675))
+                }
+                Spacer(modifier = Modifier.padding(5.dp))
+                Column {
+                    Text(
+                        text = "Date",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(modifier = Modifier.padding(1.dp))
+                    Text(
+                        text =
+                            "${event.dateTime.substring(0,2)}/${event.dateTime.substring(2,4)}/${event.dateTime.substring(4)}",
+                        fontFamily = InstaSportFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+        }, onDismissRequest = { showJoinDialog.value = false }, confirmButton = {
+            TextButton(onClick = { showJoinDialog.value = false }) {
                 Text("OK")
             }
         }, dismissButton = {})
@@ -352,7 +409,7 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     OutlinedButton(
-                        onClick = { showDialog.value = true }, modifier = Modifier.padding(
+                        onClick = { showInfoDialog.value = true }, modifier = Modifier.padding(
                         )
                     ) {
                         Text(
@@ -361,7 +418,8 @@ fun EventItem(event: Event, isExpanded: Boolean, onExpand: (Boolean) -> Unit) {
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
                     Button(
-                        onClick = { joinEnabled = false },
+                        onClick = { joinEnabled = false
+                            showJoinDialog.value = true },
                         enabled = joinEnabled,
                         modifier = Modifier.padding()
                     ) {
