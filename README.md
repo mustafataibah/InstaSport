@@ -1,4 +1,4 @@
-# Instasport ● A sports pick app
+# Instasport ● A sports pickup app
 
 ## Overview
 This Android application is designed for sports enthusiasts to find and organize pick-up games in their vicinity. Built with Jetpack Compose, it leverages Google Maps API for location services and Firebase for backend support, including Google Authentication for secure user login.
