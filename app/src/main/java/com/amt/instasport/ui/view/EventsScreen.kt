@@ -81,6 +81,9 @@ fun EventsScreen(
     var selectedTab by remember { mutableStateOf(EventTab.AllEvents) }
     var selectedEvent by remember { mutableStateOf(initialEventId) }
 
+    // Bad code but forgot to implement this so doing this cus no time
+    eventsViewModel.fetchAllEvents()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
